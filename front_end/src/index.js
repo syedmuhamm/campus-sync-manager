@@ -8,21 +8,22 @@ import RtlLayout from 'layouts/rtl';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
+import ProtectedRoute from 'protectedRoute';
 
 ReactDOM.render(
-	<ChakraProvider theme={theme}>
-		<React.StrictMode>
-			<ThemeEditorProvider>
-				<HashRouter>
-					<Switch>
-						<Route path={`/auth`} component={AuthLayout} />
-						<Route path={`/admin`} component={AdminLayout} />
-						<Route path={`/rtl`} component={RtlLayout} />
-						<Redirect from='/' to='/admin' />
-					</Switch>
-				</HashRouter>
-			</ThemeEditorProvider>
-		</React.StrictMode>
-	</ChakraProvider>,
-	document.getElementById('root')
+  <ChakraProvider theme={theme}>
+    <React.StrictMode>
+      <ThemeEditorProvider>
+        <HashRouter>
+          <Switch>
+            <Route path={`/auth`} component={AuthLayout} />
+            <ProtectedRoute path={`/admin`} component={AdminLayout} />
+            <ProtectedRoute path={`/rtl`} component={RtlLayout} />
+            <Redirect from='/' to='/admin' />
+          </Switch>
+        </HashRouter>
+      </ThemeEditorProvider>
+    </React.StrictMode>
+  </ChakraProvider>,
+  document.getElementById('root')
 );

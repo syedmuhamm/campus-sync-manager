@@ -18,15 +18,40 @@ import { ItemContent } from 'components/menu/ItemContent';
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 // Assets
 import navImage from 'assets/img/layout/Navbar.png';
 import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes.js';
 import { ThemeEditor } from './ThemeEditor';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+
+
+
 export default function HeaderLinks(props) {
 	const { secondary } = props;
+	const history = useHistory(); // Initialize useHistory hook
+
+	// useEffect(() => {
+	// 	// Check for authentication token in local storage
+	// 	const authToken = localStorage.getItem('authToken');
+	
+	// 	// If token is absent, redirect to login page
+	// 	if (!authToken) {
+	// 	  history.push('/auth/sign-in');
+	// 	}
+	//   }, [history]);
+
+	// Function to handle logout
+	const handleLogout = () => {
+	  // Clear authentication token (e.g., remove token from local storage)
+	  localStorage.removeItem('authToken');
+  
+	  // Redirect the user to the login page
+	  history.push('/auth/sign-in');
+	};
+
 	// Chakra Color Mode
 	const navbarIcon = useColorModeValue('gray.400', 'white');
 	let menuBg = useColorModeValue('white', 'navy.800');
@@ -205,7 +230,9 @@ export default function HeaderLinks(props) {
 							_focus={{ bg: 'none' }}
 							color="red.400"
 							borderRadius="8px"
-							px="14px">
+							px="14px"
+							onClick={handleLogout}
+							>
 							<Text fontSize="sm">Log out</Text>
 						</MenuItem>
 					</Flex>

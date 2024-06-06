@@ -32,6 +32,7 @@ export default function CheckTable() {
       try {
         const response = await axios.get('http://localhost:5000/students');
         setTableData(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -61,6 +62,10 @@ export default function CheckTable() {
       {
         Header: "Gender",
         accessor: "Gender",
+      },
+      {
+        Header: "Fee Paid",
+        accessor: "FeePaid",
       },
     ],
     []
