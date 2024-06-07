@@ -8,7 +8,7 @@ import { RtlProvider } from "components/rtlProvider/RtlProvider.js";
 import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import routes from "routes.js";
+import routes from "../../routes/routes.js";
 
 // Custom Chakra theme
 export default function Dashboard(props) {

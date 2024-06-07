@@ -8,7 +8,7 @@ import RtlLayout from 'layouts/rtl';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
-import ProtectedRoute from './protectedRoute';
+import ProtectedRoute from './routes/protectedRoute';
 import SignUp from 'views/auth/signIn/signup';
 
 ReactDOM.render(

@@ -18,12 +18,12 @@ import { ItemContent } from 'components/menu/ItemContent';
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 // Assets
 import navImage from 'assets/img/layout/Navbar.png';
 import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
-import routes from 'routes.js';
+import routes from '../../routes/routes.js';
 import { ThemeEditor } from './ThemeEditor';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
