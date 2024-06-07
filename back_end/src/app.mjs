@@ -27,8 +27,6 @@ app.post('/api/auth/login', async (req, res) => {
         const [rows] = await connection.query('SELECT * FROM admins WHERE username = ?', [username]);
         connection.release();
 
-        console.log('Admin fetched from DB:', rows); // Log fetched admin data
-
         if (rows.length === 0) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }

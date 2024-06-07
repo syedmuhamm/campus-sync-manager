@@ -46,7 +46,7 @@ export default function HeaderLinks(props) {
 	// Function to handle logout
 	const handleLogout = () => {
 	  // Clear authentication token (e.g., remove token from local storage)
-	  localStorage.removeItem('authToken');
+	  localStorage.removeItem('token');
   
 	  // Redirect the user to the login page
 	  history.push('/auth/sign-in');
