@@ -106,6 +106,7 @@ function SignUp() {
                 First Name<Text color="red.500">*</Text>
               </FormLabel>
               <Input
+                id="firstName"
                 isRequired={true}
                 variant="auth"
                 fontSize="sm"
@@ -126,6 +127,7 @@ function SignUp() {
                 Last Name<Text color="red.500">*</Text>
               </FormLabel>
               <Input
+                id="lastName"
                 isRequired={true}
                 variant="auth"
                 fontSize="sm"
@@ -146,6 +148,7 @@ function SignUp() {
                 Email<Text color="red.500">*</Text>
               </FormLabel>
               <Input
+                id="emailInput"
                 isRequired={true}
                 variant="auth"
                 fontSize="sm"
@@ -167,6 +170,7 @@ function SignUp() {
               </FormLabel>
               <InputGroup size="md">
                 <Input
+                  id="password"
                   isRequired={true}
                   fontSize="sm"
                   placeholder="Min. 8 characters"
@@ -201,6 +205,7 @@ function SignUp() {
               </FormLabel>
               <InputGroup size="md">
                 <Input
+                  id="confirmPassword"
                   isRequired={true}
                   fontSize="sm"
                   placeholder="Confirm your password"

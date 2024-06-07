@@ -31,10 +31,10 @@ function AuthIllustration(props) {
         direction='column'>
         <NavLink
           to='/admin'
-          style={() => ({
+          style={{
             width: "fit-content",
             marginTop: "40px",
-          })}>
+          }}>
           <Flex
             align='center'
             ps={{ base: "25px", lg: "0px" }}

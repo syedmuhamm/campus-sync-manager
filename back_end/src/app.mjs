@@ -20,11 +20,11 @@ const pool = mysql.createPool({
 
 // Admin login endpoint
 app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT * FROM admins WHERE username = ?', [username]);
+        const [rows] = await connection.query('SELECT * FROM admins WHERE email = ?', [email]);
         connection.release();
 
         if (rows.length === 0) {
@@ -44,13 +44,34 @@ app.post('/api/auth/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: admin.id, email: admin.email }, JWT_SECRET, { expiresIn: '1h' });
 
         console.log('JWT token:', token); // Log generated JWT token
 
         res.json({ token });
     } catch (error) {
         console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Admin register endpoint
+app.post('/api/auth/register', async (req, res) => {
+    const { firstName, lastName, email, password } = req.body;
+
+    try {
+        const connection = await pool.getConnection();
+        // Check if the email is already registered
+        const [existingUser] = await connection.query('SELECT * FROM admins WHERE email = ?', [email]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Email is already registered' });
+        }
+        // Insert the new user into the database
+        await connection.query('INSERT INTO admins (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, password]);
+        connection.release();
+        res.status(201).json({ message: 'Admin registered successfully' });
+    } catch (error) {
+        console.error('Error registering admin user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

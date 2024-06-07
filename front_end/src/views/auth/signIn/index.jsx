@@ -44,14 +44,14 @@ function SignIn() {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       history.push('/admin');
     } catch (err) {
@@ -132,6 +132,7 @@ function SignIn() {
                 Email<Text color={brandStars}>*</Text>
               </FormLabel>
               <Input
+                id="emailInput"
                 isRequired={true}
                 variant='auth'
                 fontSize='sm'
@@ -141,8 +142,8 @@ function SignIn() {
                 mb='24px'
                 fontWeight='500'
                 size='lg'
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <FormLabel
                 ms='4px'
@@ -154,6 +155,7 @@ function SignIn() {
               </FormLabel>
               <InputGroup size='md'>
                 <Input
+                id="password"
                   isRequired={true}
                   fontSize='sm'
                   placeholder='Min. 8 characters'
