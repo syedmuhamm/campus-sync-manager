@@ -8,7 +8,7 @@ import RtlLayout from 'layouts/rtl';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
-import ProtectedRoute from 'protectedRoute';
+import ProtectedRoute from './protectedRoute';
 import SignUp from 'views/auth/signIn/signup';
 
 ReactDOM.render(
@@ -17,13 +17,12 @@ ReactDOM.render(
       <ThemeEditorProvider>
         <HashRouter>
           <Switch>
-            {/* <Route path={`/auth`} component={AuthLayout} /> */}
-			<Route path={`/auth/sign-in`} component={AuthLayout} />
-            <Route path={`/auth/sign-up`} component={SignUp} />
-            <ProtectedRoute path={`/admin`} component={AdminLayout} />
-            <ProtectedRoute path={`/rtl`} component={RtlLayout} />
-            <Redirect from='/' to='/admin' />
-            <Redirect to='/auth' />
+            <Route path="/auth/sign-in" component={AuthLayout} />
+            <Route path="/auth/sign-up" component={SignUp} />
+            <ProtectedRoute path="/admin" component={AdminLayout} />
+            <ProtectedRoute path="/rtl" component={RtlLayout} />
+            <Redirect exact from="/" to="/admin" />
+            <Redirect to="/auth/sign-in" />
           </Switch>
         </HashRouter>
       </ThemeEditorProvider>
