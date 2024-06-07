@@ -46,7 +46,7 @@ function SignUp() {
         email,
         password,
       });
-      history.push("/auth/sign-in");
+      history.push("/admin");
     } catch (err) {
       setError("Error registering user");
       console.error(err);

@@ -3,6 +3,7 @@ import mysql from 'mysql2/promise';
 import cors from 'cors';
 import jwt from 'jsonwebtoken'; // Import jwt library
 import { authenticateToken } from '../../middleware/auth.js';
+import bcrypt from 'bcrypt';
 
 const JWT_SECRET = 'your_jwt_secret'; // should store this in an environment variable
 
@@ -32,21 +33,13 @@ app.post('/api/auth/login', async (req, res) => {
         }
 
         const admin = rows[0];
-        // const isPasswordValid = await bcrypt.compare(password, admin.password); // Compare hashed password
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
 
-        // console.log('Password comparison result:', isPasswordValid); // Log password comparison result
-
-        // if (!isPasswordValid) {
-        //     return res.status(401).json({ error: 'Invalid username or password' });
-        // }
-
-        if (password !== admin.password) {
+        if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
         const token = jwt.sign({ id: admin.id, email: admin.email }, JWT_SECRET, { expiresIn: '1h' });
-
-        console.log('JWT token:', token); // Log generated JWT token
 
         res.json({ token });
     } catch (error) {
@@ -66,8 +59,10 @@ app.post('/api/auth/register', async (req, res) => {
         if (existingUser.length > 0) {
             return res.status(400).json({ error: 'Email is already registered' });
         }
-        // Insert the new user into the database
-        await connection.query('INSERT INTO admins (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, password]);
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+        // Insert the new user into the database with hashed password
+        await connection.query('INSERT INTO admins (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hashedPassword]);
         connection.release();
         res.status(201).json({ message: 'Admin registered successfully' });
     } catch (error) {
@@ -75,7 +70,6 @@ app.post('/api/auth/register', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 
 // Protect the existing routes
 app.use('/allData', authenticateToken);
