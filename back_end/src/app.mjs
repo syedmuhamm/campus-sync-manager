@@ -20,7 +20,7 @@ const pool = mysql.createPool({
 });
 
 // Admin login endpoint
-app.post('/api/auth/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -49,7 +49,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Admin register endpoint
-app.post('/api/auth/register', async (req, res) => {
+app.post('/register', async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     try {

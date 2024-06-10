@@ -50,6 +50,14 @@ const UserDropdown = () => {
     setAnchorEl(null)
   }
 
+  const handleLogout = () => {
+    // Clear the authentication token from local storage or session storage
+    localStorage.removeItem('authToken'); // Assuming the token is stored in local storage
+
+    // Redirect the user to the login page
+    router.push('/pages/login');
+  };
+  
   const styles = {
     py: 2,
     px: 4,
@@ -144,7 +152,7 @@ const UserDropdown = () => {
           </Box>
         </MenuItem>
         <Divider />
-        <MenuItem sx={{ py: 2 }} onClick={() => handleDropdownClose('/pages/login')}>
+        <MenuItem sx={{ py: 2 }} onClick={() => { handleDropdownClose(); handleLogout(); }}>
           <LogoutVariant sx={{ marginRight: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
           Logout
         </MenuItem>
