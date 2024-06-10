@@ -72,41 +72,24 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // Protect the existing routes
-app.use('/allData', authenticateToken);
+// app.use('/allData', authenticateToken);
 // app.use('/students', authenticateToken);
-app.use('/teachers', authenticateToken);
-app.use('/classes', authenticateToken);
+// app.use('/teachers', authenticateToken);
+// app.use('/classes', authenticateToken);
 
-// Endpoint to get all tables data
+// Endpoint to get all data (students, teachers, classes)
 app.get('/allData', async (req, res) => {
     try {
         const connection = await pool.getConnection();
 
-        // Query to retrieve all students with their associated classes and teachers
-        const [studentsRows] = await connection.query(`
-            SELECT s.*, c.ClassName AS StudentClassName, t.FirstName AS TeacherFirstName, t.LastName AS TeacherLastName
-            FROM students s
-            LEFT JOIN student_classes sc ON s.StudentID = sc.StudentID
-            LEFT JOIN classes c ON sc.ClassID = c.ClassID
-            LEFT JOIN teacher_classes tc ON c.ClassID = tc.ClassID
-            LEFT JOIN teachers t ON tc.TeacherID = t.TeacherID
-        `);
+        // Query to retrieve all student data
+        const [studentsRows] = await connection.query('SELECT * FROM students');
 
-        // Query to retrieve all teachers with their associated classes
-        const [teachersRows] = await connection.query(`
-            SELECT t.*, c.ClassName
-            FROM teachers t
-            LEFT JOIN teacher_classes tc ON t.TeacherID = tc.TeacherID
-            LEFT JOIN classes c ON tc.ClassID = c.ClassID
-        `);
+        // Query to retrieve all teacher data
+        const [teachersRows] = await connection.query('SELECT * FROM teachers');
 
-        // Query to retrieve all classes with their associated teachers
-        const [classesRows] = await connection.query(`
-            SELECT c.*, t.FirstName AS TeacherFirstName, t.LastName AS TeacherLastName
-            FROM classes c
-            LEFT JOIN teacher_classes tc ON c.ClassID = tc.ClassID
-            LEFT JOIN teachers t ON tc.TeacherID = t.TeacherID
-        `);
+        // Query to retrieve all class data
+        const [classesRows] = await connection.query('SELECT * FROM classes');
 
         connection.release();
 
