@@ -1,73 +1,78 @@
 {
-  "homepage": "https://horizon-ui.com/horizon-ui-chakra",
-  "name": "horizon-ui-chakra",
-  "version": "1.0.1",
-  "private": true,
-  "dependencies": {
-    "@chakra-ui/icons": "^1.1.5",
-    "@chakra-ui/react": "1.8.8",
-    "@chakra-ui/system": "^1.12.1",
-    "@chakra-ui/theme-tools": "^1.3.6",
-    "@emotion/cache": "^11.7.1",
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
-    "@hypertheme-editor/chakra-ui": "^0.1.5",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "apexcharts": "3.35.2",
-    "axios": "^1.7.2",
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "framer-motion": "^4.1.17",
-    "react": "17.0.2",
-    "react-apexcharts": "1.4.0",
-    "react-calendar": "^3.7.0",
-    "react-custom-scrollbars-2": "^4.2.1",
-    "react-dom": "17.0.2",
-    "react-dropzone": "^12.0.4",
-    "react-icons": "^4.3.1",
-    "react-is": "^18.0.0",
-    "react-router-dom": "^5.3.0",
-    "react-scripts": "5.0.0",
-    "react-table": "^7.7.0",
-    "stylis": "^4.1.1",
-    "stylis-plugin-rtl": "2.0.2",
-    "web-vitals": "^1.1.2"
+  "name": "materio-mui-react-nextjs-admin-template-free",
+  "description": "Most Powerful & Comprehensive Free MUI React NextJS Admin Dashboard Template built for developers! 🚀",
+  "license": "MIT",
+  "version": "1.0.0",
+  "author": {
+    "name": "ThemeSelection",
+    "url": "https://themeselection.com/"
   },
+  "bugs": {
+    "url": "https://github.com/themeselection/materio-mui-react-nextjs-admin-template-free/issues"
+  },
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/themeselection/materio-mui-react-nextjs-admin-template-free.git"
+  },
+  "homepage": "https://themeselection.com/products/materio-free-mui-react-nextjs-admin-template/",
+  "keywords": [
+    "react",
+    "javascript",
+    "admin",
+    "dashboard",
+    "material-design",
+    "nextjs",
+    "material-ui",
+    "admin-dashboard",
+    "free",
+    "mui",
+    "admin-template",
+    "admin-panel",
+    "freebies",
+    "nextjs-template",
+    "react-dashboard",
+    "themeselection"
+  ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "sitemap": "babel-node ./sitemap-builder.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export",
+    "lint": "eslint --fix \"src/**/*.{js,jsx}\"",
+    "format": "prettier --write \"src/**/*.{js,jsx}\""
   },
-  "resolutions": {
-    "react-error-overlay": "6.0.9"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@emotion/cache": "^11.6.0",
+    "@emotion/react": "^11.7.0",
+    "@emotion/server": "^11.4.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/lab": "^5.0.0-alpha.70",
+    "@mui/material": "^5.4.3",
+    "@popperjs/core": "^2.11.2",
+    "@types/react": "^18.3.3",
+    "apexcharts-clevision": "3.28.5",
+    "babel-eslint": "^10.1.0",
+    "clsx": "^1.1.1",
+    "mdi-material-ui": "^7.1.0",
+    "next": "12.0.4",
+    "nprogress": "^0.2.0",
+    "react": "^18.3.1",
+    "react-apexcharts": "^1.3.9",
+    "react-datepicker": "^4.5.0",
+    "react-dom": "^18.3.1",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-popper": "^2.2.5"
   },
   "devDependencies": {
-    "gh-pages": "^3.2.3"
+    "@types/next": "^9.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "12.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "next-transpile-modules": "^9.0.0",
+    "prettier": "2.5.1"
   }
 }
