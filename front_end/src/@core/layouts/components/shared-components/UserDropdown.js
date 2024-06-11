@@ -52,7 +52,7 @@ const UserDropdown = () => {
 
   const handleLogout = () => {
     // Clear the authentication token from local storage or session storage
-    localStorage.removeItem('authToken'); // Assuming the token is stored in local storage
+    localStorage.removeItem('auth-token'); // Assuming the token is stored in local storage
 
     // Redirect the user to the login page
     router.push('/pages/login');

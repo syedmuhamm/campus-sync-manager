@@ -6,7 +6,6 @@ import { authenticateToken } from '../../middleware/auth.js';
 import bcrypt from 'bcrypt';
 
 const JWT_SECRET = 'your_jwt_secret'; // should store this in an environment variable
-
 const app = express();
 app.use(cors());
 app.use(express.json()); 
@@ -142,6 +141,25 @@ app.get('/classes', async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error('Error executing query:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to get the current logged-in admin user
+app.get('/getAdmin', authenticateToken, async (req, res) => {
+    try {
+        const adminId = req.admin.id;
+        const connection = await pool.getConnection();
+        const [rows] = await connection.query('SELECT id, firstName, lastName, email FROM admins WHERE id = ?', [adminId]);
+        connection.release();
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error fetching admin:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
