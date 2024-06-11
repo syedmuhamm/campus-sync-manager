@@ -27,6 +27,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import SkeletonMainLoader from 'src/skeletons/skeletonMainLoader'
 
 // ** Create Emotion Cache
 const clientSideEmotionCache = createEmotionCache()
@@ -112,7 +113,7 @@ const App = props => {
             // Theme Component with settings
             <ThemeComponent settings={settings}>
               {/* Render loader or layout based on loading state */}
-              {loading ? <Loader /> : getLayout(<Component {...pageProps} />)}
+              {loading ? <SkeletonMainLoader /> : getLayout(<Component {...pageProps} />)}
             </ThemeComponent>
           )}
         </SettingsConsumer>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import SkeletonMainLoader from 'src/skeletons/SkeletonMainLoader';
 
 // add authorization to pages
 const withAuth = WrappedComponent => {
@@ -18,7 +19,7 @@ const withAuth = WrappedComponent => {
     }, [router]);
 
     if (loading) {
-      return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.5rem' }}>Loading...</div>;
+      return <SkeletonMainLoader />
     }
 
     return <WrappedComponent {...props} />;
