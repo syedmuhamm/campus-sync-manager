@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid'
 // ** Demo Components Imports
 import TypographyTexts from 'src/views/typography/TypographyTexts'
 import TypographyHeadings from 'src/views/typography/TypographyHeadings'
+import withAuth from 'src/lib/withAuth'
 
 const TypographyPage = () => {
   return (
@@ -18,4 +19,4 @@ const TypographyPage = () => {
   )
 }
 
-export default TypographyPage
+export default withAuth(TypographyPage)

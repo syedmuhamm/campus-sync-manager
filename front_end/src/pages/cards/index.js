@@ -18,6 +18,7 @@ import CardWithCollapse from 'src/views/cards/CardWithCollapse'
 import CardVerticalRatings from 'src/views/cards/CardVerticalRatings'
 import CardNavigationCenter from 'src/views/cards/CardNavigationCenter'
 import CardHorizontalRatings from 'src/views/cards/CardHorizontalRatings'
+import withAuth from 'src/lib/withAuth'
 
 const CardBasic = () => {
   return (
@@ -80,4 +81,4 @@ const CardBasic = () => {
   )
 }
 
-export default CardBasic
+export default withAuth(CardBasic)

@@ -12,6 +12,7 @@ import TableSpanning from 'src/views/tables/TableSpanning';
 import TableCustomized from 'src/views/tables/TableCustomized';
 import TableCollapsible from 'src/views/tables/TableCollapsible';
 import TableStickyHeader from 'src/views/tables/TableStickyHeader';
+import withAuth from 'src/lib/withAuth';
 
 const MUITable = () => {
   return (
@@ -64,4 +65,4 @@ const MUITable = () => {
   );
 };
 
-export default MUITable;
+export default withAuth(MUITable);

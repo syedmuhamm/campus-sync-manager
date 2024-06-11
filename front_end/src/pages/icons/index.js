@@ -60,6 +60,7 @@ import AccountDetailsOutline from 'mdi-material-ui/AccountDetailsOutline'
 import AccountArrowLeftOutline from 'mdi-material-ui/AccountArrowLeftOutline'
 import AccountArrowRightOutline from 'mdi-material-ui/AccountArrowRightOutline'
 import AccountBoxMultipleOutline from 'mdi-material-ui/AccountBoxMultipleOutline'
+import withAuth from 'src/lib/withAuth'
 
 const icons = {
   Abacus,
@@ -161,4 +162,4 @@ const Icons = () => {
   )
 }
 
-export default Icons
+export default withAuth(Icons)

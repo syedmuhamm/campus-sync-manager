@@ -12,6 +12,7 @@ import FormLayoutsAlignment from 'src/views/form-layouts/FormLayoutsAlignment'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
+import withAuth from 'src/lib/withAuth'
 
 const FormLayouts = () => {
   return (
@@ -34,4 +35,4 @@ const FormLayouts = () => {
   )
 }
 
-export default FormLayouts
+export default withAuth(FormLayouts)
