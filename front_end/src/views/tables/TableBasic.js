@@ -11,16 +11,15 @@ import { useData } from 'src/context/dataContext';
 
 const TableBasic = () => {
   const { appData,setAppData, fetchData, updateAdmin, updateStudent } = useData(); // fetches all data from database
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
-  // The following commented code, is a test that editing the appData object, now successfully updates the backend, using dataContext.js
 
-  // const [isDataLoading, setIsDataLoading] = useState(true);
+  useEffect(() => {
+    fetchData().then(() => setIsDataLoading(false));
+  }, []);
+
+  // The following commented code, is a test that editing the appData object, now successfully updates the backend, using dataContext.js 
   // const [adminUpdated, setAdminUpdated] = useState(false); // New state variable to track admin update
-
-
-  // useEffect(() => {
-  //   fetchData().then(() => setIsDataLoading(false));
-  // }, []);
 
   // useEffect(() => {
   //   // Call handleAdminUpdate only once when data is fetched and loading state is false
@@ -29,10 +28,6 @@ const TableBasic = () => {
   //       setAdminUpdated(true); // Update state to indicate admin update is performed
   //   }
   // }, [isDataLoading, adminUpdated]); 
-  
-  // if (isDataLoading) {
-  //   return <div>Loading...</div>;
-  // }
 
   // //test for editing backend fields from frontend
   // const handleAdminUpdate = (id) => {
@@ -77,7 +72,9 @@ const TableBasic = () => {
     }));
   };
 
-    
+  if (isDataLoading) {
+    return <div>Loading...</div>;
+  }
     
   return (
     <TableContainer component={Paper}>
