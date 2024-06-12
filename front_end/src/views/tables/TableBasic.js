@@ -14,7 +14,7 @@ const TableBasic = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('auth-token');
         if (!token) {
           throw new Error('Token not found');
         }
@@ -25,7 +25,6 @@ const TableBasic = () => {
           }
         });
 
-        console.log(response.data)
         const studentData = response.data.students; 
 
         // Update state with student data
@@ -50,6 +49,7 @@ const TableBasic = () => {
             <TableCell align='right'>Gender</TableCell>
             <TableCell align='right'>Fee Amount</TableCell>
             <TableCell align='right'>Fee Paid</TableCell>
+            <TableCell align='right'>Class</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,6 +69,7 @@ const TableBasic = () => {
               <TableCell align='right'>{student.Gender}</TableCell>
               <TableCell align='right'>{student.FeeAmount}</TableCell>
               <TableCell align='right'>{student.FeePaid}</TableCell>
+              <TableCell align='right'>{student.ClassID}</TableCell>
             </TableRow>
           ))}
         </TableBody>

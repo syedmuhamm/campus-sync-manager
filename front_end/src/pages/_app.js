@@ -27,7 +27,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
-import SkeletonMainLoader from 'src/skeletons/skeletonMainLoader'
+import SkeletonMainLoader from 'src/skeletons/SkeletonMainLoader'
 
 // ** Create Emotion Cache
 const clientSideEmotionCache = createEmotionCache()
