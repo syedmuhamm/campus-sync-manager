@@ -70,6 +70,56 @@ app.post('/register', async (req, res) => {
     }
 });
 
+// Endpoint to update admin information
+app.put('/updateAdmin/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { firstName, lastName, email, password } = req.body;
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Check if a new password is provided and hash it
+        let hashedPassword;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+        }
+
+        // Construct the SQL query based on provided fields
+        const fields = [];
+        const values = [];
+        if (firstName) {
+            fields.push('firstName = ?');
+            values.push(firstName);
+        }
+        if (lastName) {
+            fields.push('lastName = ?');
+            values.push(lastName);
+        }
+        if (email) {
+            fields.push('email = ?');
+            values.push(email);
+        }
+        if (hashedPassword) {
+            fields.push('password = ?');
+            values.push(hashedPassword);
+        }
+        values.push(id);
+
+        const sql = `UPDATE admins SET ${fields.join(', ')} WHERE id = ?`;
+
+        await connection.query(sql, values);
+
+        // Fetch the updated admin data
+        const [updatedAdmin] = await connection.query('SELECT id, firstName, lastName, email, createdAt FROM admins WHERE id = ?', [id]);
+        connection.release();
+
+        res.json(updatedAdmin[0]);
+    } catch (error) {
+        console.error('Error updating admin:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Protect the existing routes
 // app.use('/allData', authenticateToken);
 // app.use('/students', authenticateToken);
@@ -90,13 +140,17 @@ app.get('/allData', async (req, res) => {
         // Query to retrieve all class data
         const [classesRows] = await connection.query('SELECT * FROM classes');
 
-        connection.release();
+         // Query to retrieve all admin data (excluding passwords)
+         const [adminsRows] = await connection.query('SELECT id, firstName, lastName, email, createdAt FROM admins');
+
+         connection.release();
 
         // Constructing the API response object
         const responseData = {
             students: studentsRows,
             teachers: teachersRows,
-            classes: classesRows
+            classes: classesRows,
+            admins: adminsRows
         };
 
         res.json(responseData);
@@ -118,6 +172,30 @@ app.get('/students', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// Update student endpoint
+app.put('/updateStudent/:id', async (req, res) => {
+    const { id } = req.params;
+    const { FirstName, LastName, Age, Gender, FeeAmount, FeePaid, ClassID } = req.body;
+
+    try {
+        const connection = await pool.getConnection();
+        await connection.query(
+            'UPDATE students SET FirstName = ?, LastName = ?, Age = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ? WHERE StudentID = ?',
+            [FirstName, LastName, Age, Gender, FeeAmount, FeePaid, ClassID, id]
+        );
+
+        // Fetch the updated student data
+        const [updatedStudent] = await connection.query('SELECT * FROM students WHERE StudentID = ?', [id]);
+        connection.release();
+
+        res.json(updatedStudent[0]);
+    } catch (error) {
+        console.error('Error updating student:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 // Endpoint to get all teachers
 app.get('/teachers', async (req, res) => {

@@ -13,6 +13,7 @@ import TableCustomized from 'src/views/tables/TableCustomized';
 import TableCollapsible from 'src/views/tables/TableCollapsible';
 import TableStickyHeader from 'src/views/tables/TableStickyHeader';
 import withAuth from 'src/lib/withAuth';
+import { DataProvider } from 'src/context/dataContext';
 
 const MUITable = () => {
   return (
@@ -28,7 +29,9 @@ const MUITable = () => {
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Basic Table' titleTypographyProps={{ variant: 'h6' }} />
-          <TableBasic />
+          <DataProvider>
+            <TableBasic />
+          </DataProvider>
         </Card>
       </Grid>
       <Grid item xs={12}>

@@ -32,20 +32,6 @@ import SkeletonMainLoader from 'src/skeletons/SkeletonMainLoader'
 // ** Create Emotion Cache
 const clientSideEmotionCache = createEmotionCache()
 
-// ** Loader Component
-const Loader = () => (
-  // Display Loading... text centered on the screen
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    fontSize: '1.5rem',
-  }}>
-    Loading...
-  </div>
-)
-
 const App = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
