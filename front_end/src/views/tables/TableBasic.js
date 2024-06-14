@@ -8,6 +8,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import { useData } from 'src/context/dataContext';
+import dayjs from 'dayjs';
 
 const TableBasic = () => {
   const { appData, setAppData, updateAdmin, updateStudent } = useData();
@@ -52,6 +53,13 @@ const TableBasic = () => {
   if (isDataLoading) {
     return <div>Loading...</div>;
   }
+
+  const calculateAge = (dateOfBirth) => {
+    const dob = dayjs(dateOfBirth);
+    const now = dayjs();
+    const age = now.diff(dob, 'year');
+    return age;
+  };
     
   return (
     <TableContainer component={Paper}>
@@ -79,7 +87,7 @@ const TableBasic = () => {
                         <TableCell>{student.StudentID}</TableCell>
                         <TableCell>{student.FirstName}</TableCell>
                         <TableCell>{student.LastName}</TableCell>
-                        <TableCell align="right">{student.Age}</TableCell>
+                        <TableCell align="right">{calculateAge(student.DateOfBirth)}</TableCell>
                         <TableCell align="right">{student.Gender}</TableCell>
                         <TableCell align="right">{student.FeeAmount}</TableCell>
                         <TableCell

@@ -24,7 +24,7 @@ app.post('/login', async (req, res) => {
 
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT * FROM admins WHERE email = ?', [email]);
+        const [rows] = await connection.query('SELECT * FROM admins WHERE AdminEmail = ?', [email]);
         connection.release();
 
         if (rows.length === 0) {
@@ -32,13 +32,13 @@ app.post('/login', async (req, res) => {
         }
 
         const admin = rows[0];
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
+        const isPasswordValid = await bcrypt.compare(password, admin.AdminPassword);
 
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const token = jwt.sign({ id: admin.id, email: admin.email }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: admin.AdminId, email: admin.AdminEmail }, JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ token });
     } catch (error) {
@@ -54,14 +54,14 @@ app.post('/register', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         // Check if the email is already registered
-        const [existingUser] = await connection.query('SELECT * FROM admins WHERE email = ?', [email]);
+        const [existingUser] = await connection.query('SELECT * FROM admins WHERE AdminEmail = ?', [email]);
         if (existingUser.length > 0) {
             return res.status(400).json({ error: 'Email is already registered' });
         }
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
         // Insert the new user into the database with hashed password
-        await connection.query('INSERT INTO admins (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hashedPassword]);
+        await connection.query('INSERT INTO admins (FirstName, LastName, AdminEmail, AdminPassword) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hashedPassword]);
         connection.release();
         res.status(201).json({ message: 'Admin registered successfully' });
     } catch (error) {
@@ -88,29 +88,29 @@ app.put('/updateAdmin/:id', authenticateToken, async (req, res) => {
         const fields = [];
         const values = [];
         if (firstName) {
-            fields.push('firstName = ?');
+            fields.push('FirstName = ?');
             values.push(firstName);
         }
         if (lastName) {
-            fields.push('lastName = ?');
+            fields.push('LastName = ?');
             values.push(lastName);
         }
         if (email) {
-            fields.push('email = ?');
+            fields.push('AdminEmail = ?');
             values.push(email);
         }
         if (hashedPassword) {
-            fields.push('password = ?');
+            fields.push('AdminPassword = ?');
             values.push(hashedPassword);
         }
         values.push(id);
 
-        const sql = `UPDATE admins SET ${fields.join(', ')} WHERE id = ?`;
+        const sql = `UPDATE admins SET ${fields.join(', ')} WHERE AdminID = ?`;
 
         await connection.query(sql, values);
 
         // Fetch the updated admin data
-        const [updatedAdmin] = await connection.query('SELECT id, firstName, lastName, email, createdAt FROM admins WHERE id = ?', [id]);
+        const [updatedAdmin] = await connection.query('SELECT AdminId, FirstName, LastName, Email, AdminCreatedAt FROM admins WHERE id = ?', [id]);
         connection.release();
 
         res.json(updatedAdmin[0]);
@@ -141,7 +141,7 @@ app.get('/allData', async (req, res) => {
         const [classesRows] = await connection.query('SELECT * FROM classes');
 
          // Query to retrieve all admin data (excluding passwords)
-         const [adminsRows] = await connection.query('SELECT id, firstName, lastName, email, createdAt FROM admins');
+         const [adminsRows] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus, AdminCreatedAt FROM admins');
 
          connection.release();
 
@@ -176,13 +176,13 @@ app.get('/students', async (req, res) => {
 // Update student endpoint, not used yet, update for variables required!!
 app.put('/updateStudent/:id', async (req, res) => {
     const { id } = req.params;
-    const { FirstName, LastName, Age, Gender, FeeAmount, FeePaid, ClassID } = req.body;
+    const { FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID } = req.body;
 
     try {
         const connection = await pool.getConnection();
         await connection.query(
-            'UPDATE students SET FirstName = ?, LastName = ?, Age = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ? WHERE StudentID = ?',
-            [FirstName, LastName, Age, Gender, FeeAmount, FeePaid, ClassID, id]
+            'UPDATE students SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ? WHERE StudentID = ?',
+            [FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID, id]
         );
 
         // Fetch the updated student data
@@ -228,7 +228,7 @@ app.get('/getAdmin', authenticateToken, async (req, res) => {
     try {
         const adminId = req.admin.id;
         const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT id, firstName, lastName, email FROM admins WHERE id = ?', [adminId]);
+        const [rows] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus FROM admins WHERE id = ?', [adminId]);
         connection.release();
 
         if (rows.length === 0) {
