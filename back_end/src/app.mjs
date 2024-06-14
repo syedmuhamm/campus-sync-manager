@@ -173,7 +173,7 @@ app.get('/students', async (req, res) => {
     }
 });
 
-// Update student endpoint
+// Update student endpoint, not used yet, update for variables required!!
 app.put('/updateStudent/:id', async (req, res) => {
     const { id } = req.params;
     const { FirstName, LastName, Age, Gender, FeeAmount, FeePaid, ClassID } = req.body;
