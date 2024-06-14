@@ -10,37 +10,14 @@ import TableContainer from '@mui/material/TableContainer';
 import { useData } from 'src/context/dataContext';
 
 const TableBasic = () => {
-  const { appData,setAppData, fetchData, updateAdmin, updateStudent } = useData(); // fetches all data from database
+  const { appData, setAppData, updateAdmin, updateStudent } = useData();
   const [isDataLoading, setIsDataLoading] = useState(true);
 
-
   useEffect(() => {
-    fetchData().then(() => setIsDataLoading(false));
-  }, []);
-
-  // The following commented code, is a test that editing the appData object, now successfully updates the backend, using dataContext.js 
-  // const [adminUpdated, setAdminUpdated] = useState(false); // New state variable to track admin update
-
-  // useEffect(() => {
-  //   // Call handleAdminUpdate only once when data is fetched and loading state is false
-  //   if (!isDataLoading && !adminUpdated) {
-  //       handleAdminUpdate(11);
-  //       setAdminUpdated(true); // Update state to indicate admin update is performed
-  //   }
-  // }, [isDataLoading, adminUpdated]); 
-
-  // //test for editing backend fields from frontend
-  // const handleAdminUpdate = (id) => {
-  //   // Find the admin object by id
-  //   const adminToUpdate = appData.admins.find(admin => admin.id === id);
-  
-  //   // Update the admin's properties
-  //   adminToUpdate.firstName = 'New First Name';
-  //   adminToUpdate.lastName = 'New Last Name';
-  //   adminToUpdate.email = 'newemailzz13z@example.com';
-  
-  //   updateAdmin(id, adminToUpdate);
-  // };
+    if (appData.students.length > 0) {
+      setIsDataLoading(false);
+    }
+  }, [appData]);
 
   /**
    * Handle the click event for toggling the 'Fee Paid' status of a student.

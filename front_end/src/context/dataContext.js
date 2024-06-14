@@ -1,95 +1,101 @@
 // src/DataContext.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-// Create a context to manage the application data
+// Create the DataContext with createContext
 const DataContext = createContext();
 
-// DataProvider component manages the state and provides data to the components
+// DataProvider component that wraps around the app to provide data context
 export const DataProvider = ({ children }) => {
-    // State to store the application data
-    const [appData, setAppData] = useState({
-        admins: [],
-        students: [],
-        teachers: [],
-        classes: []
-    });
+  // State to hold the application data
+  const [appData, setAppData] = useState({
+    admins: [],
+    students: [],
+    teachers: [],
+    classes: []
+  });
 
-    // Function to fetch data from the backend API
-    const fetchData = async () => {
-        try {
-            // Get the authentication token from local storage
-            const token = localStorage.getItem('auth-token');
-            // Send a GET request to fetch data from the API
-            const response = await axios.get('http://localhost:5000/allData', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            // Update the state with the fetched data
-            setAppData(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
+  // State to manage loading status
+  const [isLoading, setIsLoading] = useState(true);
+
+  // State to manage errors
+  const [error, setError] = useState(null);
+
+  // Function to fetch data from the backend
+  const fetchData = useCallback(async () => {
+    try {
+      // Retrieve the authentication token from local storage
+      const token = localStorage.getItem('auth-token');
+      
+      // Fetch data from the backend using the token for authorization
+      const response = await axios.get('http://localhost:5000/allData', {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-    };
+      });
 
-    // Function to update an admin's information
-    const updateAdmin = async (id, updatedAdmin) => {
-        try {
-            // Get the authentication token from local storage
-            const token = localStorage.getItem('auth-token');
-            // Send a PUT request to update the admin data
-            const response = await axios.put(`http://localhost:5000/updateAdmin/${id}`, updatedAdmin, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            // Log the response data
-            console.log('Update response:', response.data);
-            // Update the state with the updated admin data
-            setAppData((prevData) => ({
-                ...prevData,
-                admins: prevData.admins.map((admin) => 
-                    admin.id === id ? response.data : admin
-                )
-            }));
-        } catch (error) {
-            console.error('Error updating admin:', error);
-            console.log('Error details:', error.response);
+      // Update the appData state with the fetched data
+      setAppData(response.data);
+      // Set loading state to false after data is fetched
+      setIsLoading(false);
+    } catch (error) {
+      // Handle any errors that occur during the fetch
+      setError('Error fetching data');
+      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  }, []);
+
+  // Generic function to handle data updates for different entity types
+  const updateData = async (url, id, updatedData, type) => {
+    try {
+      // Retrieve the authentication token from local storage
+      const token = localStorage.getItem('auth-token');
+      
+      // Send a PUT request to the backend to update the data
+      const response = await axios.put(url, updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-    };
+      });
 
-    // Function to update a student's information
-    const updateStudent = async (id, updatedStudent) => {
-        try {
-            // Get the authentication token from local storage
-            const token = localStorage.getItem('auth-token');
-            // Send a PUT request to update the student data
-            const response = await axios.put(`http://localhost:5000/updateStudent/${id}`, updatedStudent, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            // Update the state with the updated student data
-            setAppData((prevData) => ({
-                ...prevData,
-                students: prevData.students.map((student) => 
-                    student.id === id ? response.data : student
-                )
-            }));
-        } catch (error) {
-            console.error('Error updating student:', error);
-            console.log('Error details:', error.response);
-        }
-    };
+      // Update the appData state with the updated entity
+      setAppData((prevData) => ({
+        ...prevData,
+        [type]: prevData[type].map((item) => (item.id === id ? response.data : item))
+      }));
 
-    // Provide the data and functions to the components using the DataContext
-    return (
-        <DataContext.Provider value={{ appData,setAppData, fetchData, updateAdmin, updateStudent }}>
-            {children}
-        </DataContext.Provider>
-    );
+      // Return the updated data
+      return response.data;
+    } catch (error) {
+      // Handle any errors that occur during the update
+      setError(`Error updating ${type.slice(0, -1)}: ${id}`);
+      console.error(`Error updating ${type.slice(0, -1)}:`, error);
+    }
+  };
+
+  // Function to update an admin
+  const updateAdmin = async (id, updatedAdmin) => {
+    return await updateData(`http://localhost:5000/updateAdmin/${id}`, id, updatedAdmin, 'admins');
+  };
+
+  // Function to update a student
+  const updateStudent = async (id, updatedStudent) => {
+    return await updateData(`http://localhost:5000/updateStudent/${id}`, id, updatedStudent, 'students');
+  };
+
+  // useEffect to fetch data on component mount
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return (
+    // Provide the context values to the children components
+    <DataContext.Provider value={{ appData, setAppData, isLoading, error, fetchData, updateAdmin, updateStudent }}>
+      {children}
+    </DataContext.Provider>
+  );
 };
 
-// Custom hook to access the data and functions from the DataContext
+// Custom hook to use the DataContext
 export const useData = () => useContext(DataContext);
