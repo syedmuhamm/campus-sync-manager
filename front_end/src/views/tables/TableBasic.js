@@ -9,7 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import Button from '@mui/material/Button';
 import { useData } from 'src/context/dataContext';
 import dayjs from 'dayjs';
-import { FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TablePagination } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Switch, TablePagination, FormControlLabel } from '@mui/material';
+import StudentEditModal from '../modals/StudentEditModal';
+
 
 const TableBasic = () => {
   const { appData, setAppData, updateStudent } = useData();
@@ -18,6 +20,8 @@ const TableBasic = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedClass, setSelectedClass] = useState('');
   const [showUnpaid, setShowUnpaid] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // useEffect to check if data is loaded
   useEffect(() => {
@@ -31,21 +35,21 @@ const TableBasic = () => {
     const newFeePaid = currentFeePaid === 'yes' ? 'no' : 'yes';
     const updatedStudent = { ...appData.students.find((s) => s.StudentID === StudentID), FeePaid: newFeePaid };
     await updateStudent(StudentID, updatedStudent);
-    setAppData(prevData => ({
+    setAppData((prevData) => ({
       ...prevData,
-      students: prevData.students.map(student => {
+      students: prevData.students.map((student) => {
         if (student.StudentID === StudentID) {
           return { ...student, FeePaid: newFeePaid };
         }
         return student;
-      })
+      }),
     }));
   };
 
   // Function to handle class selection change
   const handleClassChange = (event) => {
     setSelectedClass(event.target.value);
-    setPage(0);  // Reset to first page on class change
+    setPage(0); // Reset to first page on class change
   };
 
   // Function to handle pagination page change
@@ -68,11 +72,38 @@ const TableBasic = () => {
   };
 
   // Filtering students based on selected class and unpaid fee status
-  const filteredStudents = appData.students.filter(student => {
+  const filteredStudents = appData.students.filter((student) => {
     const classMatch = selectedClass ? student.ClassID === parseInt(selectedClass) : true;
     const feeMatch = showUnpaid ? student.FeePaid === 'no' : true;
     return classMatch && feeMatch;
   });
+
+  // Function to handle row click to open the modal
+  const handleRowClick = (student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
+  // Function to handle modal close
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedStudent(null);
+  };
+
+  // Function to handle save from modal
+  const handleSaveStudent = async (updatedStudent) => {
+    await updateStudent(updatedStudent.StudentID, updatedStudent);
+    setAppData((prevData) => ({
+      ...prevData,
+      students: prevData.students.map((student) => {
+        if (student.StudentID === updatedStudent.StudentID) {
+          return updatedStudent;
+        }
+        return student;
+      }),
+    }));
+    handleCloseModal();
+  };
 
   // Display loading message while data is being loaded
   if (isDataLoading) {
@@ -91,13 +122,17 @@ const TableBasic = () => {
             onChange={handleClassChange}
             label="Select Class"
           >
-            <MenuItem value=""><em>All</em></MenuItem>
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
             {appData.classes.map((cls) => (
-              <MenuItem key={cls.ClassID} value={cls.ClassID}>{cls.ClassName}</MenuItem>
+              <MenuItem key={cls.ClassID} value={cls.ClassID}>
+                {cls.ClassName}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" color="secondary" onClick={() => setShowUnpaid(prev => !prev)}>
+        <Button variant="contained" color="secondary" onClick={() => setShowUnpaid((prev) => !prev)}>
           {showUnpaid ? 'Show All Students' : 'Show Unpaid Fee Students'}
         </Button>
       </div>
@@ -120,8 +155,10 @@ const TableBasic = () => {
               <TableRow
                 key={student.StudentID}
                 sx={{
-                  '&:last-of-type td, &:last-of-type th': { border: 0 }
+                  '&:last-of-type td, &:last-of-type th': { border: 0 },
+                  cursor: 'pointer', // Add cursor pointer to indicate clickable rows
                 }}
+                onClick={() => handleRowClick(student)}
               >
                 <TableCell>{student.StudentID}</TableCell>
                 <TableCell>{student.FirstName}</TableCell>
@@ -136,6 +173,7 @@ const TableBasic = () => {
                         checked={student.FeePaid === 'yes'}
                         onChange={() => handleFeePaidClick(student.StudentID, student.FeePaid)}
                         color={student.FeePaid === 'yes' ? 'success' : 'error'}
+                        onClick={(e) => e.stopPropagation()} // Prevent row click when toggling switch
                       />
                     }
                     label={student.FeePaid === 'yes' ? 'Yes' : 'No'}
@@ -156,6 +194,14 @@ const TableBasic = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {selectedStudent && (
+        <StudentEditModal
+          student={selectedStudent}
+          open={isModalOpen}
+          handleClose={handleCloseModal}
+          handleSave={handleSaveStudent}
+        />
+      )}
     </Paper>
   );
 };
