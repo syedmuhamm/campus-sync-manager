@@ -9,28 +9,27 @@ import TableContainer from '@mui/material/TableContainer';
 import Button from '@mui/material/Button';
 import { useData } from 'src/context/dataContext';
 import dayjs from 'dayjs';
-import { FormControl, InputLabel, MenuItem, Select, Switch, TablePagination, FormControlLabel } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Switch, TablePagination, FormControlLabel, Box } from '@mui/material';
 import StudentEditModal from '../modals/StudentEditModal';
 
+const StudentTableMain = () => {
+  const { appData, setAppData, updateStudent, deleteStudent } = useData();
+  const [isDataLoading, setIsDataLoading] = useState(true); // State to manage data loading status
+  const [page, setPage] = useState(0); // State to manage the current page in pagination
+  const [rowsPerPage, setRowsPerPage] = useState(10); // State to manage rows per page in pagination
+  const [selectedClass, setSelectedClass] = useState(''); // State to manage selected class filter
+  const [showUnpaid, setShowUnpaid] = useState(false); // State to manage unpaid fee filter
+  const [selectedStudent, setSelectedStudent] = useState(null); // State to manage the selected student for editing
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
 
-const TableBasic = () => {
-  const { appData, setAppData, updateStudent } = useData();
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selectedClass, setSelectedClass] = useState('');
-  const [showUnpaid, setShowUnpaid] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // useEffect to check if data is loaded
+  // Effect to set data loading status based on availability of student data
   useEffect(() => {
     if (appData.students.length > 0) {
       setIsDataLoading(false);
     }
   }, [appData]);
 
-  // Function to handle the fee paid switch click
+  // Handler to toggle fee paid status
   const handleFeePaidClick = async (StudentID, currentFeePaid) => {
     const newFeePaid = currentFeePaid === 'yes' ? 'no' : 'yes';
     const updatedStudent = { ...appData.students.find((s) => s.StudentID === StudentID), FeePaid: newFeePaid };
@@ -46,18 +45,18 @@ const TableBasic = () => {
     }));
   };
 
-  // Function to handle class selection change
+  // Handler for class selection change
   const handleClassChange = (event) => {
     setSelectedClass(event.target.value);
-    setPage(0); // Reset to first page on class change
+    setPage(0);
   };
 
-  // Function to handle pagination page change
+  // Handler for pagination page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Function to handle rows per page change
+  // Handler for changing rows per page in pagination
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -71,26 +70,50 @@ const TableBasic = () => {
     return age;
   };
 
-  // Filtering students based on selected class and unpaid fee status
+  // Function to get class name from class ID
+  const getClassName = (classID) => {
+    const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
+    return classInfo ? classInfo.ClassName : 'Unknown';
+  };
+
+  // Filter students based on selected class, unpaid status, and enabled status
   const filteredStudents = appData.students.filter((student) => {
     const classMatch = selectedClass ? student.ClassID === parseInt(selectedClass) : true;
     const feeMatch = showUnpaid ? student.FeePaid === 'no' : true;
-    return classMatch && feeMatch;
+    const statusMatch = student.Status === 'Enabled';
+    return classMatch && feeMatch && statusMatch;
   });
 
-  // Function to handle row click to open the modal
-  const handleRowClick = (student) => {
+  // Handler for edit button click
+  const handleEditClick = (student) => {
     setSelectedStudent(student);
     setIsModalOpen(true);
   };
 
-  // Function to handle modal close
+  // Handler for delete button click
+  const handleDeleteClick = async (student) => {
+    if (window.confirm(`Are you sure you want to delete ${student.FirstName} ${student.LastName}?`)) {
+      const updatedStudent = { ...student, Status: 'Disabled' };
+      await updateStudent(student.StudentID, updatedStudent);
+      setAppData((prevData) => ({
+        ...prevData,
+        students: prevData.students.map((s) => {
+          if (s.StudentID === student.StudentID) {
+            return updatedStudent;
+          }
+          return s;
+        }),
+      }));
+    }
+  };
+
+  // Handler for closing the modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedStudent(null);
   };
 
-  // Function to handle save from modal
+  // Handler for saving the updated student details
   const handleSaveStudent = async (updatedStudent) => {
     await updateStudent(updatedStudent.StudentID, updatedStudent);
     setAppData((prevData) => ({
@@ -105,7 +128,7 @@ const TableBasic = () => {
     handleCloseModal();
   };
 
-  // Display loading message while data is being loaded
+  // Display loading indicator while data is being fetched
   if (isDataLoading) {
     return <div>Loading...</div>;
   }
@@ -113,27 +136,35 @@ const TableBasic = () => {
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px' }}>
-        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-          <InputLabel id="class-select-label">Select Class</InputLabel>
+        <FormControl variant="outlined" sx={{ minWidth: 80, maxWidth: 150 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center', marginBottom: '5px'}}>
+            <InputLabel id="class-select-label">Select Class</InputLabel>
+          </Box>
           <Select
             labelId="class-select-label"
             id="class-select"
             value={selectedClass}
             onChange={handleClassChange}
             label="Select Class"
+            size="small"
           >
             <MenuItem value="">
               <em>All</em>
             </MenuItem>
             {appData.classes.map((cls) => (
-              <MenuItem key={cls.ClassID} value={cls.ClassID}>
+              <MenuItem key={cls.ClassID} value={cls.ClassID} sx={{ textAlign: 'center' }}>
                 {cls.ClassName}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" color="secondary" onClick={() => setShowUnpaid((prev) => !prev)}>
-          {showUnpaid ? 'Show All Students' : 'Show Unpaid Fee Students'}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setShowUnpaid((prev) => !prev)}
+          sx={{ minWidth: 150, maxWidth: 200, padding: '6px 16px', fontSize: '0.875rem' }}
+        >
+          {showUnpaid ? 'All Students' : 'Unpaid Fee Students'}
         </Button>
       </div>
       <TableContainer component={Paper}>
@@ -143,11 +174,10 @@ const TableBasic = () => {
               <TableCell>Student ID</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
-              <TableCell align="right">Age</TableCell>
-              <TableCell align="right">Gender</TableCell>
               <TableCell align="right">Fee Amount</TableCell>
               <TableCell align="right">Fee Paid</TableCell>
               <TableCell align="right">Class</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -156,15 +186,11 @@ const TableBasic = () => {
                 key={student.StudentID}
                 sx={{
                   '&:last-of-type td, &:last-of-type th': { border: 0 },
-                  cursor: 'pointer', // Add cursor pointer to indicate clickable rows
                 }}
-                onClick={() => handleRowClick(student)}
               >
                 <TableCell>{student.StudentID}</TableCell>
                 <TableCell>{student.FirstName}</TableCell>
                 <TableCell>{student.LastName}</TableCell>
-                <TableCell align="right">{calculateAge(student.DateOfBirth)}</TableCell>
-                <TableCell align="right">{student.Gender}</TableCell>
                 <TableCell align="right">{student.FeeAmount}</TableCell>
                 <TableCell align="right">
                   <FormControlLabel
@@ -173,13 +199,30 @@ const TableBasic = () => {
                         checked={student.FeePaid === 'yes'}
                         onChange={() => handleFeePaidClick(student.StudentID, student.FeePaid)}
                         color={student.FeePaid === 'yes' ? 'success' : 'error'}
-                        onClick={(e) => e.stopPropagation()} // Prevent row click when toggling switch
                       />
                     }
                     label={student.FeePaid === 'yes' ? 'Yes' : 'No'}
                   />
                 </TableCell>
-                <TableCell align="right">{student.ClassID}</TableCell>
+                <TableCell align="right">{getClassName(student.ClassID)}</TableCell>
+                <TableCell align="right">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEditClick(student)}
+                    sx={{ minWidth: 70, fontSize: '0.75rem', color: 'white !important' }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleDeleteClick(student)}
+                    sx={{ minWidth: 70, fontSize: '0.75rem', color: 'white !important', marginLeft: '8px' }}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -206,4 +249,4 @@ const TableBasic = () => {
   );
 };
 
-export default TableBasic;
+export default StudentTableMain;
