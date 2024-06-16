@@ -62,14 +62,6 @@ const StudentTableMain = () => {
     setPage(0);
   };
 
-  // Function to calculate age from date of birth
-  const calculateAge = (dateOfBirth) => {
-    const dob = dayjs(dateOfBirth);
-    const now = dayjs();
-    const age = now.diff(dob, 'year');
-    return age;
-  };
-
   // Function to get class name from class ID
   const getClassName = (classID) => {
     const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
@@ -160,7 +152,7 @@ const StudentTableMain = () => {
         </FormControl>
         <Button
           variant="contained"
-          color="secondary"
+          color={showUnpaid ? 'secondary' : 'primary'}
           onClick={() => setShowUnpaid((prev) => !prev)}
           sx={{ minWidth: 150, maxWidth: 200, padding: '6px 16px', fontSize: '0.875rem' }}
         >
