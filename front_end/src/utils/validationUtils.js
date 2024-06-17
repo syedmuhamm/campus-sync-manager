@@ -7,6 +7,7 @@ export const validateText = (value, fieldName) => {
     } else if (!textRegex.test(value)) {
       return `${fieldName} can only contain letters`;
     }
+    
     return '';
   };
   
@@ -17,6 +18,7 @@ export const validateText = (value, fieldName) => {
     } else if (!emailRegex.test(value)) {
       return 'Invalid email address';
     }
+
     return '';
   };
   
@@ -27,6 +29,7 @@ export const validateText = (value, fieldName) => {
     } else if (!phoneRegex.test(value)) {
       return 'Invalid phone number';
     }
+
     return '';
   };
 
@@ -34,6 +37,7 @@ export const validateNumber = (value, fieldName) => {
     if (!value || isNaN(value)) {
         return `${fieldName} must be a number`;
     }
+
     return '';
 };
   
@@ -41,6 +45,7 @@ export const validateEnum = (value, validValues, fieldName) => {
     if (!validValues.includes(value)) {
         return `${fieldName} must be one of ${validValues.join(', ')}`;
     }
+
     return '';
 };
   

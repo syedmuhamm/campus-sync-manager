@@ -36,6 +36,7 @@ export const DataProvider = ({ children }) => {
 
       // Update the appData state with the fetched data
       setAppData(response.data);
+      
       // Set loading state to false after data is fetched
       setIsLoading(false);
     } catch (error) {
@@ -90,6 +91,7 @@ export const DataProvider = ({ children }) => {
   }, [fetchData]);
 
   return (
+
     // Provide the context values to the children components
     <DataContext.Provider value={{ appData, setAppData, isLoading, error, fetchData, updateAdmin, updateStudent }}>
       {children}

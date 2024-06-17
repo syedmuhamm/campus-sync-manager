@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Box } from '@mui/material';
 import ModalHeader from '../ModalHeader';
-import ModalBody from './ModalBody';
+import StudentBodyModal from './StudentBodyModal';
 import ModalFooter from '../ModalFooter';
-import { BorderRadius } from 'mdi-material-ui';
 
 /**
  * StudentEditModal Component
@@ -37,7 +36,7 @@ const StudentEditModal = ({ student, open, handleClose, handleSave }) => {
         {/* Modal Header */}
         <ModalHeader title="Edit Student" handleClose={handleClose} />
         {/* Modal Body with form fields */}
-        <ModalBody formData={formData} handleChange={handleChange} />
+        <StudentBodyModal formData={formData} handleChange={handleChange} />
         {/* Modal Footer with save and cancel buttons */}
         <ModalFooter handleSubmit={handleSubmit} handleClose={handleClose} />
       </Box>

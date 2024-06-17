@@ -57,6 +57,7 @@ const StudentTableMain = () => {
 
   const getClassName = (classID) => {
     const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
+    
     return classInfo ? classInfo.ClassName : 'Unknown'; // Get class name based on class ID
   };
 

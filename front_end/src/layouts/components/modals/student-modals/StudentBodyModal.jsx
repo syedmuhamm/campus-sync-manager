@@ -5,12 +5,12 @@ import { validateText, validateEmail, validatePhoneNumber, validateNumber, valid
 import { useData } from 'src/context/dataContext';
 
 /**
- * ModalBody Component
+ * StudentBodyModal Component
  * This component renders a form for editing student details within a modal.
  * @param {object} formData - The current form data for the student.
  * @param {function} handleChange - Function to handle form input changes.
  */
-const ModalBody = ({ formData, handleChange }) => {
+const StudentBodyModal = ({ formData, handleChange }) => {
   const { appData } = useData(); // using context hook
   const [errors, setErrors] = useState({});
 
@@ -44,6 +44,7 @@ const ModalBody = ({ formData, handleChange }) => {
     }
     setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
   };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     handleChange(event);
@@ -53,12 +54,14 @@ const ModalBody = ({ formData, handleChange }) => {
   // Function to get the class name from the class ID
   const getClassName = (classID) => {
     const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
+
     return classInfo ? classInfo.ClassName : 'Unknown';
   };
 
   // Function to get the class ID from the class name
   const getClassID = (className) => {
     const classInfo = appData.classes.find((cls) => cls.ClassName === className);
+    
     return classInfo ? classInfo.ClassID : null;
   };
 
@@ -246,4 +249,4 @@ const ModalBody = ({ formData, handleChange }) => {
   );
 };
 
-export default ModalBody;
+export default StudentBodyModal;
