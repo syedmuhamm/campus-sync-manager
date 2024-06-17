@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import { useData } from 'src/context/dataContext';
 import dayjs from 'dayjs';
 import { FormControl, InputLabel, MenuItem, Select, Switch, TablePagination, FormControlLabel, Box } from '@mui/material';
-import StudentEditModal from '../../layouts/components/modals/StudentEditModal';
+import StudentEditModal from '../../layouts/components/modals/student-modals/StudentEditModal';
 
 const StudentTableMainChanged = () => {
   const { appData, setAppData, updateStudent, deleteStudent } = useData();

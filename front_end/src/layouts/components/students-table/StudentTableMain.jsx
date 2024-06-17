@@ -8,7 +8,7 @@ import StudentTableHeader from './StudentTableHeader';
 import StudentTableBody from './StudentTableBody';
 import StudentTablePagination from './StudentTablePagination';
 import { Button, Box } from '@mui/material';
-import StudentEditModal from '../modals/StudentEditModal';
+import StudentEditModal from '../modals/student-modals/StudentEditModal';
 import { filterStudents } from 'src/utils/dataUtils';
 
 const StudentTableMain = () => {

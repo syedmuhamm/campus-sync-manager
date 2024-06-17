@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Box } from '@mui/material';
-import ModalHeader from './ModalHeader';
+import ModalHeader from '../ModalHeader';
 import ModalBody from './ModalBody';
-import ModalFooter from './ModalFooter';
+import ModalFooter from '../ModalFooter';
+import { BorderRadius } from 'mdi-material-ui';
 
 /**
  * StudentEditModal Component
@@ -54,6 +55,7 @@ const modalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  borderRadius: 1
 };
 
 export default StudentEditModal;
