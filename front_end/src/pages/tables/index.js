@@ -13,16 +13,20 @@ const MUITable = () => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Typography variant='h5'>
-          <Link href='https://mui.com/components/tables/' target='_blank'>
-            MUI Tables
-          </Link>
+          {/* <Link href='https://mui.com/components/tables/' target='_blank'> */}
+           
+          {/* </Link> */}
         </Typography>
-        <Typography variant='body2'>Tables display sets of data. They can be fully customized</Typography>
+        {/* <Typography variant='body2'>Student table displays all students data. They can be categorized on class base or unpaid fee based.</Typography> */}
       </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Basic Table' titleTypographyProps={{ variant: 'h6' }} />
-            <StudentTableMain />
+          <CardHeader
+            title="Student Table"
+            titleTypographyProps={{ variant: 'h6', color: 'primary' }} // Set title color to primary
+            subheader="Student table displays all students data. They can be categorized on class base or unpaid fee based."
+          />
+          <StudentTableMain />
         </Card>
       </Grid>
       {/* <Grid item xs={12}>

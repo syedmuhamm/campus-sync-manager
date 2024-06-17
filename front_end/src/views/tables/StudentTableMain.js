@@ -10,9 +10,9 @@ import Button from '@mui/material/Button';
 import { useData } from 'src/context/dataContext';
 import dayjs from 'dayjs';
 import { FormControl, InputLabel, MenuItem, Select, Switch, TablePagination, FormControlLabel, Box } from '@mui/material';
-import StudentEditModal from '../modals/StudentEditModal';
+import StudentEditModal from '../../layouts/components/modals/StudentEditModal';
 
-const StudentTableMain = () => {
+const StudentTableMainChanged = () => {
   const { appData, setAppData, updateStudent, deleteStudent } = useData();
   const [isDataLoading, setIsDataLoading] = useState(true); // State to manage data loading status
   const [page, setPage] = useState(0); // State to manage the current page in pagination
@@ -241,4 +241,4 @@ const StudentTableMain = () => {
   );
 };
 
-export default StudentTableMain;
+export default StudentTableMainChanged;

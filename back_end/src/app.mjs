@@ -173,16 +173,29 @@ app.get('/students', async (req, res) => {
     }
 });
 
-// Update student endpoint, not used yet, update for variables required!!
+// Update student endpoint, including additional fields
 app.put('/updateStudent/:id', async (req, res) => {
     const { id } = req.params;
-    const { FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID } = req.body;
+    const { 
+        FirstName, 
+        LastName, 
+        DateOfBirth, 
+        Gender, 
+        FeeAmount, 
+        FeePaid, 
+        ClassID,
+        StudentEmail,
+        StudentPhoneNumber, 
+        StudentFatherName, 
+        StudentGuardianPhoneNumber, 
+        Status 
+    } = req.body;
 
     try {
         const connection = await pool.getConnection();
         await connection.query(
-            'UPDATE students SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ? WHERE StudentID = ?',
-            [FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID, id]
+            'UPDATE students SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ?, StudentEmail = ?, StudentPhoneNumber = ?, StudentFatherName = ?, StudentGuardianPhoneNumber = ?, Status = ? WHERE StudentID = ?',
+            [FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID, StudentEmail, StudentPhoneNumber, StudentFatherName, StudentGuardianPhoneNumber, Status, id]
         );
 
         // Fetch the updated student data
@@ -195,6 +208,7 @@ app.put('/updateStudent/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 // Endpoint to get all teachers
