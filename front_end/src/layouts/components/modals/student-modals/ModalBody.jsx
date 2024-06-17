@@ -1,6 +1,8 @@
-import React from 'react';
-import { Box, TextField, Grid } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { formatDate } from 'src/utils/dateUtils';
+import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateEnum, validateStatus } from 'src/utils/validationUtils';
+import { useData } from 'src/context/dataContext';
 
 /**
  * ModalBody Component
@@ -9,6 +11,57 @@ import { formatDate } from 'src/utils/dateUtils';
  * @param {function} handleChange - Function to handle form input changes.
  */
 const ModalBody = ({ formData, handleChange }) => {
+  const { appData } = useData(); // using context hook
+  const [errors, setErrors] = useState({});
+
+  const handleValidation = (name, value) => {
+    let error = '';
+    switch (name) {
+      case 'FirstName':
+      case 'LastName':
+      case 'Gender':
+      case 'StudentFatherName':
+        error = validateText(value, name);
+        break;
+      case 'StudentEmail':
+        error = validateEmail(value);
+        break;
+      case 'StudentPhoneNumber':
+      case 'StudentGuardianPhoneNumber':
+        error = validatePhoneNumber(value);
+        break;
+      case 'FeeAmount':
+        error = validateNumber(value, 'Fee Amount');
+        break;
+      case 'FeePaid':
+        error = validateEnum(value, ['yes', 'no'], 'Fee Paid');
+        break;
+      case 'Status':
+        error = validateStatus(value);
+        break;
+      default:
+        break;
+    }
+    setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
+  };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    handleChange(event);
+    handleValidation(name, value);
+  };
+
+  // Function to get the class name from the class ID
+  const getClassName = (classID) => {
+    const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
+    return classInfo ? classInfo.ClassName : 'Unknown';
+  };
+
+  // Function to get the class ID from the class name
+  const getClassID = (className) => {
+    const classInfo = appData.classes.find((cls) => cls.ClassName === className);
+    return classInfo ? classInfo.ClassID : null;
+  };
+
   // Format the date of birth for the input field
   const formattedDateOfBirth = formData.DateOfBirth ? formatDate(formData.DateOfBirth) : '';
 
@@ -24,7 +77,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="FirstName"
             value={formData.FirstName}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.FirstName}
+            helperText={errors.FirstName}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -35,7 +90,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="LastName"
             value={formData.LastName}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.LastName}
+            helperText={errors.LastName}
           />
         </Grid>
 
@@ -48,7 +105,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="StudentEmail"
             value={formData.StudentEmail}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.StudentEmail}
+            helperText={errors.StudentEmail}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -59,7 +118,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="StudentPhoneNumber"
             value={formData.StudentPhoneNumber}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.StudentPhoneNumber}
+            helperText={errors.StudentPhoneNumber}
           />
         </Grid>
 
@@ -72,7 +133,7 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="DateOfBirth"
             value={formattedDateOfBirth}
-            onChange={handleChange}
+            onChange={handleInputChange}
             required
           />
         </Grid>
@@ -84,7 +145,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="Gender"
             value={formData.Gender}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.Gender}
+            helperText={errors.Gender}
           />
         </Grid>
 
@@ -97,7 +160,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="StudentFatherName"
             value={formData.StudentFatherName}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.StudentFatherName}
+            helperText={errors.StudentFatherName}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -108,7 +173,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="StudentGuardianPhoneNumber"
             value={formData.StudentGuardianPhoneNumber}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.StudentGuardianPhoneNumber}
+            helperText={errors.StudentGuardianPhoneNumber}
           />
         </Grid>
 
@@ -121,7 +188,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="FeeAmount"
             value={formData.FeeAmount}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.FeeAmount}
+            helperText={errors.FeeAmount}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -132,7 +201,9 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="FeePaid"
             value={formData.FeePaid}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.FeePaid}
+            helperText={errors.FeePaid}
           />
         </Grid>
 
@@ -145,8 +216,30 @@ const ModalBody = ({ formData, handleChange }) => {
             fullWidth
             name="Status"
             value={formData.Status}
-            onChange={handleChange}
+            onChange={handleInputChange}
+            error={!!errors.Status}
+            helperText={errors.Status}
           />
+        </Grid>
+
+        {/* Dropdown select for class */}
+        <Grid item xs={12}>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="class-select-label">Class</InputLabel>
+            <Select
+              labelId="class-select-label"
+              id="class-select"
+              value={getClassName(formData.ClassID)}
+              onChange={(e) => handleChange({ target: { name: 'ClassID', value: getClassID(e.target.value) } })}
+              label="Class"
+            >
+              {appData.classes.map((cls) => (
+                <MenuItem key={cls.ClassID} value={cls.ClassName}>
+                  {cls.ClassName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
     </Box>

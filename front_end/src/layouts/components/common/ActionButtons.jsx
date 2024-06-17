@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 
 /**
  * ActionButtons Component
@@ -10,7 +10,7 @@ import { Button } from '@mui/material';
  * - handleDeleteClick (function): Function to handle the "Delete" button click event.
  */
 const ActionButtons = ({ handleEditClick, handleDeleteClick }) => (
-  <>
+  <Box display="flex" alignItems="center">
     {/* Edit Button */}
     <Button
       variant="contained"
@@ -30,7 +30,7 @@ const ActionButtons = ({ handleEditClick, handleDeleteClick }) => (
     >
       Delete
     </Button>
-  </>
+  </Box>
 );
 
 export default ActionButtons;

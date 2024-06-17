@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import { useData } from 'src/context/dataContext';
 import LoadingIndicator from '../Common/LoadingIndicator';
 import SelectClassFilter from '../Common/SelectClassFilter';
 import StudentTableHeader from './StudentTableHeader';
 import StudentTableBody from './StudentTableBody';
-import StudentTablePagination from './StudentTablePagination';
 import { Button, Box } from '@mui/material';
 import StudentEditModal from '../modals/student-modals/StudentEditModal';
 import { filterStudents } from 'src/utils/dataUtils';
+import StudentTablePagination from './StudennTablePagination';
 
 const StudentTableMain = () => {
   // Context and state management
@@ -60,7 +61,7 @@ const StudentTableMain = () => {
   };
 
   // Filtered student data based on selected filters
-  const filteredStudents = filterStudents(appData.students, selectedClass, showUnpaid, 'Enabled');
+  const filteredStudents = filterStudents(appData.students, selectedClass, showUnpaid, 'enabled');
 
   // Handlers for modal interactions
   const handleEditClick = (student) => {
@@ -116,17 +117,19 @@ const StudentTableMain = () => {
 
       {/* Table container */}
       <TableContainer component={Paper}>
-        <StudentTableHeader /> {/* Table header */}
-        {/* Table body with student data */}
-        <StudentTableBody
-          filteredStudents={filteredStudents}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          handleFeePaidClick={handleFeePaidClick}
-          handleEditClick={handleEditClick}
-          handleDeleteClick={handleDeleteClick}
-          getClassName={getClassName}
-        />
+        <Table> {/* Table component to contain the header and body */}
+          <StudentTableHeader /> {/* Table header */}
+          {/* Table body with student data */}
+          <StudentTableBody
+            filteredStudents={filteredStudents}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleFeePaidClick={handleFeePaidClick}
+            handleEditClick={handleEditClick}
+            handleDeleteClick={handleDeleteClick}
+            getClassName={getClassName}
+          />
+        </Table>
       </TableContainer>
 
       {/* Pagination component */}

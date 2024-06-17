@@ -127,7 +127,7 @@ const StudentTableMainChanged = () => {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px' }}>
+      {/* <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px' }}>
         <FormControl variant="outlined" sx={{ minWidth: 80, maxWidth: 150 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center', marginBottom: '5px'}}>
             <InputLabel id="class-select-label">Select Class</InputLabel>
@@ -236,7 +236,7 @@ const StudentTableMainChanged = () => {
           handleClose={handleCloseModal}
           handleSave={handleSaveStudent}
         />
-      )}
+      )} */}
     </Paper>
   );
 };
