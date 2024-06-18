@@ -63,7 +63,12 @@ const StudentTableMain = () => {
   };
 
   // Filtered student data based on selected filters
-  const filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption);
+  let filteredStudents;
+  if (filterOption === 'disabled') {
+    filteredStudents = appData.students.filter(student => student.Status.toLowerCase() === 'disabled');
+  } else {
+    filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption, 'enabled');
+  }
 
   // Handlers for modal interactions
   const handleEditClick = (student) => {
@@ -73,7 +78,7 @@ const StudentTableMain = () => {
 
   const handleDeleteClick = async (student) => {
     if (window.confirm(`Are you sure you want to delete ${student.FirstName} ${student.LastName}?`)) {
-      const updatedStudent = { ...student, Status: 'Disabled' };
+      const updatedStudent = { ...student, Status: 'disabled' };
       await updateStudent(student.StudentID, updatedStudent);
       setAppData((prevData) => ({
         ...prevData,
