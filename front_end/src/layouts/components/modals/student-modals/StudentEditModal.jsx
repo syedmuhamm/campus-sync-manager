@@ -15,6 +15,7 @@ import ModalFooter from '../ModalFooter';
 const StudentEditModal = ({ student, open, handleClose, handleSave }) => {
   // State to hold form data
   const [formData, setFormData] = useState({ ...student });
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -36,9 +37,9 @@ const StudentEditModal = ({ student, open, handleClose, handleSave }) => {
         {/* Modal Header */}
         <ModalHeader title="Edit Student" handleClose={handleClose} />
         {/* Modal Body with form fields */}
-        <StudentBodyModal formData={formData} handleChange={handleChange} />
+        <StudentBodyModal formData={formData} handleChange={handleChange} setIsFormValid={setIsFormValid} />
         {/* Modal Footer with save and cancel buttons */}
-        <ModalFooter handleSubmit={handleSubmit} handleClose={handleClose} />
+        <ModalFooter handleSubmit={handleSubmit} handleClose={handleClose} isFormValid={isFormValid} />
       </Box>
     </Modal>
   );

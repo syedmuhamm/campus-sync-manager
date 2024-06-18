@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { formatDate } from 'src/utils/dateUtils';
 import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateEnum, validateStatus } from 'src/utils/validationUtils';
@@ -10,7 +10,7 @@ import { useData } from 'src/context/dataContext';
  * @param {object} formData - The current form data for the student.
  * @param {function} handleChange - Function to handle form input changes.
  */
-const StudentBodyModal = ({ formData, handleChange }) => {
+const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
   const { appData } = useData(); // using context hook
   const [errors, setErrors] = useState({});
 
@@ -43,6 +43,11 @@ const StudentBodyModal = ({ formData, handleChange }) => {
     handleChange(event);
     handleValidation(name, value);
   };
+
+  useEffect(() => {
+    const hasErrors = Object.values(errors).some((error) => error !=="");
+    setIsFormValid(!hasErrors);
+  }, [errors, setIsFormValid]);
 
   // Function to get the class name from the class ID
   const getClassName = (classID) => {
