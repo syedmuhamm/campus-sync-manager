@@ -19,7 +19,7 @@ const SelectClassFilter = ({ selectedClass, handleClassChange, classes }) => (
       label="Select Class"
     >
       <MenuItem value="">
-        <em>All</em>
+        <em>All Classes</em>
       </MenuItem>
       {classes.map((cls) => (
         <MenuItem key={cls.ClassID} value={cls.ClassID}>

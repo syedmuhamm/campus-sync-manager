@@ -63,12 +63,7 @@ const StudentTableMain = () => {
   };
 
   // Filtered student data based on selected filters
-  let filteredStudents;
-  if (filterOption === 'disabled') {
-    filteredStudents = appData.students.filter(student => student.Status.toLowerCase() === 'disabled');
-  } else {
-    filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption, 'enabled');
-  }
+  const filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption);
 
   // Handlers for modal interactions
   const handleEditClick = (student) => {
