@@ -2,23 +2,33 @@
  * Filters an array of student objects based on selected criteria.
  * @param {Array} students - Array of student objects to filter.
  * @param {string|number} selectedClass - ID of the selected class to filter by.
- * @param {boolean} showUnpaid - Flag indicating whether to filter unpaid students.
+ * @param {string} filterOption - Option indicating the type of filter ('all', 'unpaid', 'disabled').
  * @param {string} status - Status of the students to filter by ('Enabled' or 'Disabled').
  * @returns {Array} - Filtered array of student objects.
  */
-export const filterStudents = (students, selectedClass, showUnpaid, status) => {
-  // Filter the students array based on the following criteria
+export const filterStudentsViaSelectedClass = (students, selectedClass, filterOption, status) => {
   return students.filter((student) => {
     // Check if selectedClass is defined and match student's ClassID
     const classMatch = selectedClass ? student.ClassID === parseInt(selectedClass) : true;
 
-    // Check if showUnpaid is true and match student's FeePaid status
-    const feeMatch = showUnpaid ? student.FeePaid === 'no' : true;
+    // // Match student's Status with provided status parameter
+    // const statusMatch = student.Status.toLowerCase() === status.toLowerCase();
 
-    // Match student's Status with provided status parameter
-    const statusMatch = student.Status === status;
+    // Additional filter based on filterOption
+    let filterMatch;
+    switch (filterOption) {
+      case 'unpaid':
+        filterMatch = student.FeePaid === 'no';
+        break;
+      case 'disabled':
+        filterMatch = student.Status.toLowerCase() === 'disabled';
+        break;
+      case 'all':
+      default:
+        filterMatch = true;
+    }
 
     // Return true if all conditions are met for this student, otherwise false
-    return classMatch && feeMatch && statusMatch;
+    return classMatch && filterMatch;
   });
 };

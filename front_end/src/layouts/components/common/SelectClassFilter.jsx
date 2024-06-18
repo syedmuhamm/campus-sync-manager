@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 /**
  * SelectClassFilter Component
@@ -9,27 +9,20 @@ import { FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
  * @param {Array} classes - Array of class objects to populate the dropdown options.
  */
 const SelectClassFilter = ({ selectedClass, handleClassChange, classes }) => (
-  <FormControl variant="outlined" sx={{ minWidth: 80, maxWidth: 150 }}>
-    {/* Box for styling the label */}
-    <Box sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center', marginBottom: '5px' }}>
-      <InputLabel id="class-select-label">Select Class</InputLabel>
-    </Box>
-    {/* Select dropdown for choosing a class */}
+  <FormControl fullWidth margin="dense" sx={{ minWidth: 150, maxWidth: 200 }}>
+    <InputLabel id="class-select-label">Select Class</InputLabel>
     <Select
       labelId="class-select-label"
       id="class-select"
       value={selectedClass}
       onChange={handleClassChange}
       label="Select Class"
-      size="small"
     >
-      {/* Default option for selecting all classes */}
       <MenuItem value="">
         <em>All</em>
       </MenuItem>
-      {/* Mapping over classes array to render each class as a MenuItem */}
       {classes.map((cls) => (
-        <MenuItem key={cls.ClassID} value={cls.ClassID} sx={{ textAlign: 'center' }}>
+        <MenuItem key={cls.ClassID} value={cls.ClassID}>
           {cls.ClassName}
         </MenuItem>
       ))}

@@ -7,10 +7,11 @@ import LoadingIndicator from '../Common/LoadingIndicator';
 import SelectClassFilter from '../Common/SelectClassFilter';
 import StudentTableHeader from './StudentTableHeader';
 import StudentTableBody from './StudentTableBody';
-import { Button, Box } from '@mui/material';
+import { Button, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import StudentEditModal from '../modals/student-modals/StudentEditModal';
-import { filterStudents } from 'src/utils/dataUtils';
+import { filterStudentsViaSelectedClass } from 'src/utils/dataUtils';
 import StudentTablePagination from './StudennTablePagination';
+import FeeDisabledStudentsFilter from '../common/FeeDisabledStudentsFilter';
 
 const StudentTableMain = () => {
   // Context and state management
@@ -19,7 +20,7 @@ const StudentTableMain = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedClass, setSelectedClass] = useState('');
-  const [showUnpaid, setShowUnpaid] = useState(false);
+  const [filterOption, setFilterOption] = useState('all');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,12 +58,12 @@ const StudentTableMain = () => {
 
   const getClassName = (classID) => {
     const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
-    
+
     return classInfo ? classInfo.ClassName : 'Unknown'; // Get class name based on class ID
   };
 
   // Filtered student data based on selected filters
-  const filteredStudents = filterStudents(appData.students, selectedClass, showUnpaid, 'enabled');
+  const filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption);
 
   // Handlers for modal interactions
   const handleEditClick = (student) => {
@@ -95,6 +96,11 @@ const StudentTableMain = () => {
     handleCloseModal();
   };
 
+  const handleFilterChange = (event) => {
+    setFilterOption(event.target.value);
+    setPage(0); // Reset page when filter changes
+  };
+
   // Render loading indicator while data is loading
   if (isDataLoading) {
     return <LoadingIndicator />;
@@ -106,14 +112,7 @@ const StudentTableMain = () => {
       {/* Filter controls */}
       <Box display="flex" justifyContent="space-between" p={2}>
         <SelectClassFilter selectedClass={selectedClass} handleClassChange={handleClassChange} classes={appData.classes} />
-        <Button
-          variant="contained"
-          color={showUnpaid ? 'secondary' : 'primary'}
-          onClick={() => setShowUnpaid((prev) => !prev)}
-          sx={{ minWidth: 150, maxWidth: 200, p: 1, fontSize: '0.875rem' }}
-        >
-          {showUnpaid ? 'All Students' : 'Unpaid Fee Students'}
-        </Button>
+        <FeeDisabledStudentsFilter filterOption={filterOption} handleFilterChange={handleFilterChange} />
       </Box>
 
       {/* Table container */}
