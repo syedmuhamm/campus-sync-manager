@@ -40,16 +40,3 @@ export const validateNumber = (value, fieldName) => {
 
     return '';
 };
-  
-export const validateEnum = (value, validValues, fieldName) => {
-    if (!validValues.includes(value)) {
-        return `${fieldName} must be one of ${validValues.join(', ')}`;
-    }
-
-    return '';
-};
-  
-// Specific validation for Status
-export const validateStatus = (value) => {
-    return validateEnum(value, ['enabled', 'disabled'], 'Status');
-};

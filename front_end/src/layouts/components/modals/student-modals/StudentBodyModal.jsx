@@ -19,7 +19,6 @@ const StudentBodyModal = ({ formData, handleChange }) => {
     switch (name) {
       case 'FirstName':
       case 'LastName':
-      case 'Gender':
       case 'StudentFatherName':
         error = validateText(value, name);
         break;
@@ -32,12 +31,6 @@ const StudentBodyModal = ({ formData, handleChange }) => {
         break;
       case 'FeeAmount':
         error = validateNumber(value, 'Fee Amount');
-        break;
-      case 'FeePaid':
-        error = validateEnum(value, ['yes', 'no'], 'Fee Paid');
-        break;
-      case 'Status':
-        error = validateStatus(value);
         break;
       default:
         break;
@@ -141,17 +134,25 @@ const StudentBodyModal = ({ formData, handleChange }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            margin="dense"
-            label="Gender"
-            type="text"
-            fullWidth
-            name="Gender"
-            value={formData.Gender}
-            onChange={handleInputChange}
-            error={!!errors.Gender}
-            helperText={errors.Gender}
-          />
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel id="gender-select-label">Gender</InputLabel>
+            <Select
+              labelId="gender-select-label"
+              id="gender-select"
+              name="Gender"
+              value={formData.Gender}
+              onChange={handleInputChange}
+              label="Gender"
+              error={!!errors.Gender}
+            >
+              {['Male', 'Female', 'Other'].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.Gender && <p style={{ color: 'red' }}>{errors.Gender}</p>}
+          </FormControl>
         </Grid>
 
         {/* Student Guardian and Student Guardian Phone Number */}
@@ -197,32 +198,48 @@ const StudentBodyModal = ({ formData, handleChange }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            margin="dense"
-            label="Fee Paid"
-            type="text"
-            fullWidth
-            name="FeePaid"
-            value={formData.FeePaid}
-            onChange={handleInputChange}
-            error={!!errors.FeePaid}
-            helperText={errors.FeePaid}
-          />
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel id="fee-paid-select-label">Fee Paid</InputLabel>
+            <Select
+              labelId="fee-paid-select-label"
+              id="fee-paid-select"
+              name="FeePaid"
+              label="FeePaid"
+              value={formData.FeePaid}
+              onChange={handleInputChange}
+              error={!!errors.FeePaid}
+            >
+              {['yes', 'no'].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.FeePaid && <p>{errors.FeePaid}</p>}
+          </FormControl>
         </Grid>
 
         {/* Status */}
         <Grid item xs={12}>
-          <TextField
-            margin="dense"
-            label="Status"
-            type="text"
-            fullWidth
+        <FormControl fullWidth margin="normal" variant="outlined">
+          <InputLabel id="status-select-label">Status</InputLabel>
+          <Select
+            labelId="status-select-label"
+            id="status-select"
             name="Status"
+            label="Status"
             value={formData.Status}
             onChange={handleInputChange}
             error={!!errors.Status}
-            helperText={errors.Status}
-          />
+          >
+            {['enabled', 'disabled'].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.Status && <p>{errors.Status}</p>}
+          </FormControl>
         </Grid>
 
         {/* Dropdown select for class */}
