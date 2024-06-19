@@ -16,15 +16,18 @@ const SearchBar = () => {
   // Function to search for users based on searchTerm
   const searchData = useCallback(async (term) => {
     setLoading(true)
+
     // const data = await fetchData()
     const lowerCaseTerm = term.toLowerCase()
+
     const results = appData.students.filter(
-        student => 
-            student.FirstName.toLowerCase().includes(lowerCaseTerm)
-            || student.LastName.toLowerCase().includes(lowerCaseTerm)
-            || student.StudentEmail.toLowerCase().includes(lowerCaseTerm)
-            || student.StudentAddress.toLowerCase().includes(lowerCaseTerm));
+      student => 
+          student.FirstName.toLowerCase().includes(lowerCaseTerm)
+          || student.LastName.toLowerCase().includes(lowerCaseTerm)
+          || student.StudentEmail.toLowerCase().includes(lowerCaseTerm)
+          || student.StudentAddress.toLowerCase().includes(lowerCaseTerm));
     setLoading(false)
+
     return results
   }, [appData.students])
 
@@ -41,6 +44,7 @@ const SearchBar = () => {
     if (searchTerm.trim() === '') {
       setSearchResults([])
       setSuggestionsOpen(false)
+
       return
     }
 
@@ -77,6 +81,7 @@ const SearchBar = () => {
     const dob = dayjs(dateOfBirth);
     const now = dayjs();
     const age = now.diff(dob, 'year');
+
     return age;
   };
 
@@ -93,6 +98,7 @@ const SearchBar = () => {
         sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: 4,
+              
               // Adjust padding and font size for a larger text field
               padding: '0px 35px', 
               fontSize: '16px',

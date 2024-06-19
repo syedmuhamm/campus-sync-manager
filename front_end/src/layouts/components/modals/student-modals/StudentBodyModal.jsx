@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { formatDate } from 'src/utils/dateUtils';
-import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateEnum, validateStatus } from 'src/utils/validationUtils';
+import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateEnum, validateStatus, validateAddress } from 'src/utils/validationUtils';
 import { useData } from 'src/context/dataContext';
 
 /**
@@ -32,6 +32,8 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
       case 'FeeAmount':
         error = validateNumber(value, 'Fee Amount');
         break;
+      case 'StudentAddress':
+        error = validateAddress(value, 'Student Address')
       default:
         break;
     }
@@ -139,7 +141,7 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth margin="normal" variant="outlined">
+          <FormControl fullWidth variant="outlined" margin="dense">
             <InputLabel id="gender-select-label">Gender</InputLabel>
             <Select
               labelId="gender-select-label"
@@ -203,7 +205,7 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth margin="normal" variant="outlined">
+          <FormControl fullWidth margin="dense" variant="outlined">
             <InputLabel id="fee-paid-select-label">Fee Paid</InputLabel>
             <Select
               labelId="fee-paid-select-label"
@@ -223,10 +225,24 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
             {errors.FeePaid && <p>{errors.FeePaid}</p>}
           </FormControl>
         </Grid>
+        {/* Student address */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            margin="dense"
+            label="Student address"
+            type="text"
+            fullWidth
+            name="StudentAddress"
+            value={formData.StudentAddress}
+            onChange={handleInputChange}
+            error={!!errors.StudentAddress}
+            helperText={errors.StudentAddress}
+          />
+        </Grid>
 
         {/* Status */}
-        <Grid item xs={12}>
-        <FormControl fullWidth margin="normal" variant="outlined">
+        <Grid item xs={12} sm={6}>
+        <FormControl fullWidth margin="dense" variant="outlined">
           <InputLabel id="status-select-label">Status</InputLabel>
           <Select
             labelId="status-select-label"

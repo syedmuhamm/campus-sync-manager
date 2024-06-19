@@ -40,3 +40,14 @@ export const validateNumber = (value, fieldName) => {
 
     return '';
 };
+
+export const validateAddress = (value) => {
+  const addressRegex = /^[a-zA-Z0-9\s,.-]+$/;
+  if (!value || value.trim() === '') {
+    return 'Address is required';
+  } else if (!addressRegex.test(value)) {
+    return 'Invalid address';
+  }
+
+  return '';
+};
