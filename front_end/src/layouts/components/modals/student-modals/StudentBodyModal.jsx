@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { formatDate } from 'src/utils/dateUtils';
-import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateEnum, validateStatus, validateAddress } from 'src/utils/validationUtils';
+import { validateText, validateEmail, validatePhoneNumber, validateNumber, validateAddress, validateDate } from 'src/utils/validationUtils';
 import { useData } from 'src/context/dataContext';
 
 /**
@@ -11,7 +11,7 @@ import { useData } from 'src/context/dataContext';
  * @param {function} handleChange - Function to handle form input changes.
  */
 const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
-  const { appData } = useData(); // using context hook
+  const { appData } = useData(); // Using context hook
   const [errors, setErrors] = useState({});
 
   const handleValidation = (name, value) => {
@@ -33,7 +33,10 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
         error = validateNumber(value, 'Fee Amount');
         break;
       case 'StudentAddress':
-        error = validateAddress(value, 'Student Address')
+        error = validateAddress(value, 'Student Address');
+        break;
+      case 'DateOfBirth':
+        error = validateDate(value, 'Student Date of Birth')
       default:
         break;
     }
@@ -47,25 +50,34 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
   };
 
   useEffect(() => {
-    const hasErrors = Object.values(errors).some((error) => error !=="");
+    const hasErrors = Object.values(errors).some((error) => error !== "");
     setIsFormValid(!hasErrors);
   }, [errors, setIsFormValid]);
 
-  // Function to get the class name from the class ID
   const getClassName = (classID) => {
-    const classInfo = appData.classes.find((cls) => cls.ClassID === classID);
+    const classInfo = appData.classes.find(cls => cls.ClassID === classID);
 
     return classInfo ? classInfo.ClassName : 'Unknown';
   };
 
-  // Function to get the class ID from the class name
   const getClassID = (className) => {
-    const classInfo = appData.classes.find((cls) => cls.ClassName === className);
-    
+    const classInfo = appData.classes.find(cls => cls.ClassName === className);
+
     return classInfo ? classInfo.ClassID : null;
   };
 
-  // Format the date of birth for the input field
+  const getSectionName = (sectionID) => {
+    const sectionInfo = appData.classSections.find(sec => sec.ClassSectionID === sectionID);
+
+    return sectionInfo ? sectionInfo.ClassSectionName : 'Unknown';
+  };
+
+  const getSectionID = (sectionName) => {
+    const sectionInfo = appData.classSections.find(sec => sec.ClassSectionName === sectionName);
+
+    return sectionInfo ? sectionInfo.ClassSectionID : null;
+  };
+
   const formattedDateOfBirth = formData.DateOfBirth ? formatDate(formData.DateOfBirth) : '';
 
   return (
@@ -137,6 +149,8 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
             name="DateOfBirth"
             value={formattedDateOfBirth}
             onChange={handleInputChange}
+            error={!!errors.DateOfBirth}
+            helperText={errors.DateOfBirth}
             required
           />
         </Grid>
@@ -152,7 +166,7 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
               label="Gender"
               error={!!errors.Gender}
             >
-              {['Male', 'Female', 'Other'].map((option) => (
+              {['Male', 'Female', 'Other'].map(option => (
                 <MenuItem key={option} value={option}>
                   {option}
                 </MenuItem>
@@ -166,7 +180,7 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
         <Grid item xs={12} sm={6}>
           <TextField
             margin="dense"
-            label="Student Guardian"
+            label="Student Guardian Name"
             type="text"
             fullWidth
             name="StudentFatherName"
@@ -216,7 +230,7 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
               onChange={handleInputChange}
               error={!!errors.FeePaid}
             >
-              {['yes', 'no'].map((option) => (
+              {['yes', 'no'].map(option => (
                 <MenuItem key={option} value={option}>
                   {option}
                 </MenuItem>
@@ -225,11 +239,12 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
             {errors.FeePaid && <p>{errors.FeePaid}</p>}
           </FormControl>
         </Grid>
+
         {/* Student address */}
         <Grid item xs={12} sm={6}>
           <TextField
             margin="dense"
-            label="Student address"
+            label="Student Address"
             type="text"
             fullWidth
             name="StudentAddress"
@@ -242,29 +257,29 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
 
         {/* Status */}
         <Grid item xs={12} sm={6}>
-        <FormControl fullWidth margin="dense" variant="outlined">
-          <InputLabel id="status-select-label">Status</InputLabel>
-          <Select
-            labelId="status-select-label"
-            id="status-select"
-            name="Status"
-            label="Status"
-            value={formData.Status}
-            onChange={handleInputChange}
-            error={!!errors.Status}
-          >
-            {['enabled', 'disabled'].map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.Status && <p>{errors.Status}</p>}
+          <FormControl fullWidth margin="dense" variant="outlined">
+            <InputLabel id="status-select-label">Status</InputLabel>
+            <Select
+              labelId="status-select-label"
+              id="status-select"
+              name="Status"
+              label="Status"
+              value={formData.Status}
+              onChange={handleInputChange}
+              error={!!errors.Status}
+            >
+              {['enabled', 'disabled'].map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.Status && <p>{errors.Status}</p>}
           </FormControl>
         </Grid>
 
         {/* Dropdown select for class */}
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <FormControl fullWidth margin="dense">
             <InputLabel id="class-select-label">Class</InputLabel>
             <Select
@@ -274,9 +289,29 @@ const StudentBodyModal = ({ formData, handleChange, setIsFormValid }) => {
               onChange={(e) => handleChange({ target: { name: 'ClassID', value: getClassID(e.target.value) } })}
               label="Class"
             >
-              {appData.classes.map((cls) => (
+              {appData.classes.map(cls => (
                 <MenuItem key={cls.ClassID} value={cls.ClassName}>
                   {cls.ClassName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        {/* Dropdown select for section */}
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="section-select-label">Section</InputLabel>
+            <Select
+              labelId="section-select-label"
+              id="section-select"
+              value={getSectionName(formData.ClassSectionID)}
+              onChange={(e) => handleChange({ target: { name: 'ClassSectionID', value: getSectionID(e.target.value) } })}
+              label="Section"
+            >
+              {appData.classSections.map(sec => (
+                <MenuItem key={sec.ClassSectionID} value={sec.ClassSectionName}>
+                  {sec.ClassSectionName}
                 </MenuItem>
               ))}
             </Select>

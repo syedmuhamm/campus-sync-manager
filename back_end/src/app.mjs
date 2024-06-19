@@ -188,6 +188,7 @@ app.put('/updateStudent/:id', async (req, res) => {
         FeeAmount, 
         FeePaid, 
         ClassID,
+        ClassSectionID,
         StudentEmail,
         StudentPhoneNumber, 
         StudentFatherName, 
@@ -199,8 +200,8 @@ app.put('/updateStudent/:id', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         await connection.query(
-            'UPDATE students SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ?, StudentEmail = ?, StudentPhoneNumber = ?, StudentFatherName = ?, StudentGuardianPhoneNumber = ?, Status = ?, StudentAddress = ? WHERE StudentID = ?',
-            [FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID, StudentEmail, StudentPhoneNumber, StudentFatherName, StudentGuardianPhoneNumber, Status, StudentAddress, id]
+            'UPDATE students SET FirstName = ?, LastName = ?, DateOfBirth = ?, Gender = ?, FeeAmount = ?, FeePaid = ?, ClassID = ?, ClassSectionID = ?, StudentEmail = ?, StudentPhoneNumber = ?, StudentFatherName = ?, StudentGuardianPhoneNumber = ?, Status = ?, StudentAddress = ? WHERE StudentID = ?',
+            [FirstName, LastName, DateOfBirth, Gender, FeeAmount, FeePaid, ClassID, ClassSectionID, StudentEmail, StudentPhoneNumber, StudentFatherName, StudentGuardianPhoneNumber, Status, StudentAddress, id]
         );
 
         // Fetch the updated student data
