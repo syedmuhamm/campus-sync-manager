@@ -140,6 +140,9 @@ app.get('/allData', async (req, res) => {
         // Query to retrieve all class data
         const [classesRows] = await connection.query('SELECT * FROM classes');
 
+        // Query to retrieve all class sections
+        const[classSectionsRows] = await connection.query('SELECT * FROM class_sections')
+
          // Query to retrieve all admin data (excluding passwords)
          const [adminsRows] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus, AdminCreatedAt FROM admins');
 
@@ -150,6 +153,7 @@ app.get('/allData', async (req, res) => {
             students: studentsRows,
             teachers: teachersRows,
             classes: classesRows,
+            classSections: classSectionsRows,
             admins: adminsRows
         };
 

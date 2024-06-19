@@ -12,7 +12,8 @@ export const DataProvider = ({ children }) => {
     admins: [],
     students: [],
     teachers: [],
-    classes: []
+    classes: [],
+    class_sections: []
   });
 
   // State to manage loading status

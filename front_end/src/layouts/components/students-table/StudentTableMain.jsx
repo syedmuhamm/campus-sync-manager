@@ -7,19 +7,20 @@ import LoadingIndicator from '../Common/LoadingIndicator';
 import SelectClassFilter from '../Common/SelectClassFilter';
 import StudentTableHeader from './StudentTableHeader';
 import StudentTableBody from './StudentTableBody';
-import { Button, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box } from '@mui/material';
 import StudentEditModal from '../modals/student-modals/StudentEditModal';
-import { filterStudentsViaSelectedClass } from 'src/utils/dataUtils';
-import StudentTablePagination from './StudennTablePagination';
+import { filterStudentsViaSelectedClassAndSection } from 'src/utils/dataUtils';
 import FeeDisabledStudentsFilter from '../common/FeeDisabledStudentsFilter';
+import StudentTablePagination from './StudennTablePagination';
+import SelectSectionFilter from '../common/SelectSectionFilter';
 
 const StudentTableMain = () => {
-  // Context and state management
-  const { appData, setAppData, updateStudent } = useData(); // Example of using context hook
+  const { appData, setAppData, updateStudent } = useData(); // Context hook
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedClass, setSelectedClass] = useState('');
+  const [selectedSection, setSelectedSection] = useState('');
   const [filterOption, setFilterOption] = useState('all');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +35,7 @@ const StudentTableMain = () => {
   // Handlers for UI actions
   const handleFeePaidClick = async (StudentID, currentFeePaid) => {
     const newFeePaid = currentFeePaid === 'yes' ? 'no' : 'yes';
-    const updatedStudent = { ...appData.students.find((s) => s.StudentID === StudentID), FeePaid: newFeePaid };
+    const updatedStudent = { ...appData.students.find((s) => s.StudentID === StudentID), FeePaid: newFeePaid, ClassSectionID: selectedSection };
     await updateStudent(StudentID, updatedStudent);
     setAppData((prevData) => ({
       ...prevData,
@@ -44,7 +45,13 @@ const StudentTableMain = () => {
 
   const handleClassChange = (event) => {
     setSelectedClass(event.target.value);
+    setSelectedSection(''); // Reset section when class changes
     setPage(0); // Reset page when class filter changes
+  };
+
+  const handleSectionChange = (event) => {
+    setSelectedSection(event.target.value);
+    setPage(0); // Reset page when section filter changes
   };
 
   const handleChangePage = (event, newPage) => {
@@ -63,7 +70,7 @@ const StudentTableMain = () => {
   };
 
   // Filtered student data based on selected filters
-  const filteredStudents = filterStudentsViaSelectedClass(appData.students, selectedClass, filterOption);
+  const filteredStudents = filterStudentsViaSelectedClassAndSection(appData.students, selectedClass, selectedSection, filterOption);
 
   // Handlers for modal interactions
   const handleEditClick = (student) => {
@@ -106,12 +113,18 @@ const StudentTableMain = () => {
     return <LoadingIndicator />;
   }
 
+  // Filter sections based on selected class
+  const filteredSections = appData.classSections.filter((section) => section.ClassID == selectedClass);
+
   // Render student table and filters when data is loaded
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       {/* Filter controls */}
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <SelectClassFilter selectedClass={selectedClass} handleClassChange={handleClassChange} classes={appData.classes} />
+      <Box display="flex" justifyContent="space-between" p={2} alignItems="center">
+        <Box display="flex" alignItems="center">
+          <SelectClassFilter selectedClass={selectedClass} handleClassChange={handleClassChange} classes={appData.classes} />
+          <SelectSectionFilter selectedSection={selectedSection} handleSectionChange={handleSectionChange} filteredSections={filteredSections} />
+        </Box>
         <FeeDisabledStudentsFilter filterOption={filterOption} handleFilterChange={handleFilterChange} />
       </Box>
 

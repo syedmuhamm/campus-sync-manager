@@ -1,25 +1,26 @@
 /**
- * Filters an array of student objects based on selected criteria.
- * @param {Array} students - Array of student objects to filter.
- * @param {string|number} selectedClass - ID of the selected class to filter by.
- * @param {string} filterOption - Option indicating the type of filter ('unpaid', 'disabled', 'all').
- * @returns {Array} - Filtered array of student objects.
+ * Component for selecting a section within a class.
+ * 
+ * Props:
+ * - selectedSection: Currently selected section ID.
+ * - handleSectionChange: Function to handle section selection change.
+ * - filteredSections: Array of sections to display in the dropdown.
  */
-export const filterStudentsViaSelectedClass = (students, selectedClass, filterOption) => {
+export const filterStudentsViaSelectedClassAndSection = (students, selectedClass, selectedSection, filterOption) => {
   return students.filter((student) => {
-    switch (filterOption) {
-      case 'unpaid':
-        // Filter students who are unpaid and optionally by selected class
-        return selectedClass ? student.ClassID === parseInt(selectedClass) && student.FeePaid === 'no' : student.FeePaid === 'no';
+    // Check if the student's class matches the selectedClass filter
+    const isClassMatch = selectedClass ? student.ClassID === parseInt(selectedClass) : true;
 
-      case 'disabled':
-        // Filter students who are disabled and optionally by selected class
-        return student.Status.toLowerCase() === 'disabled' && (selectedClass ? student.ClassID === parseInt(selectedClass) : true);
+    // Check if the student's section matches the selectedSection filter
+    const isSectionMatch = selectedSection ? student.ClassSectionID === parseInt(selectedSection) : true;
 
-      case 'all':
-      default:
-        // Filter students who are not disabled and optionally by selected class
-        return !(student.Status.toLowerCase() === 'disabled') && (selectedClass ? student.ClassID === parseInt(selectedClass) : true);
-    }
+    // Check if the student's fee payment status matches the filterOption 'unpaid'
+    const isFeeMatch = filterOption === 'unpaid' ? student.FeePaid === 'no' : true;
+
+    // Check if the student's status matches the filterOption 'disabled'
+    const isStatusMatch = filterOption === 'disabled' ? student.Status.toLowerCase() === 'disabled' : student.Status.toLowerCase() !== 'disabled';
+
+    // Return true only if all conditions match
+    return isClassMatch && isSectionMatch && isFeeMatch && isStatusMatch;
   });
 };
