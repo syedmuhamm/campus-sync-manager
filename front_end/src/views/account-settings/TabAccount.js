@@ -44,13 +44,49 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
 const TabAccount = () => {
   const [openAlert, setOpenAlert] = useState(true)
   const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
-  const { appData } = useData()
+  const { appData, updateAdmin } = useData()
   const [admin, setAdmin] = useState(null)
+  const [formValues, setFormValues] = useState({
+    AdminEmail: '',
+    FirstName: '',
+    LastName: '',
+    AdminStatus: '',
+    AdminCNIC: '',
+    AdminPhoneNumber: '',
+    AdminAddress: ''
+  })
 
   useEffect(() => {
     const currentAdmin = appData.admins.find(admin => admin.isCurrentAdmin)
-    setAdmin(currentAdmin)
+    if (currentAdmin) {
+      setAdmin(currentAdmin)
+      setFormValues({
+        AdminEmail: currentAdmin.AdminEmail,
+        FirstName: currentAdmin.FirstName,
+        LastName: currentAdmin.LastName,
+        AdminStatus: currentAdmin.AdminStatus,
+        AdminCNIC: currentAdmin.AdminCNIC,
+        AdminPhoneNumber: currentAdmin.AdminPhoneNumber,
+        AdminAddress: currentAdmin.AdminAddress
+      })
+    }
   }, [appData])
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormValues({
+      ...formValues,
+      [name]: value
+    })
+  }
+
+  const handleSaveChanges = async () => {
+    if (admin) {
+      const updatedAdmin = { ...admin, ...formValues }
+      await updateAdmin(admin.AdminID, updatedAdmin)
+      setFormValues(updatedAdmin); // Update form values after save
+    }
+  }
 
   const onChange = file => {
     const reader = new FileReader()
@@ -65,7 +101,7 @@ const TabAccount = () => {
 
   return (
     <CardContent>
-      <form>
+      <form onSubmit={(e) => { e.preventDefault(); handleSaveChanges(); }}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -90,15 +126,25 @@ const TabAccount = () => {
               </Box>
             </Box>
           </Grid>
-
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue={admin.AdminEmail} />
+            <TextField 
+              fullWidth 
+              label='First Name' 
+              placeholder='John' 
+              name='FirstName' 
+              value={formValues.FirstName} 
+              onChange={handleInputChange} 
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='First Name' placeholder='John' defaultValue={admin.FirstName} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Last Name' placeholder='Doe' defaultValue={admin.LastName} />
+            <TextField 
+              fullWidth 
+              label='Last Name' 
+              placeholder='Doe' 
+              name='LastName' 
+              value={formValues.LastName} 
+              onChange={handleInputChange} 
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -106,13 +152,20 @@ const TabAccount = () => {
               type='email'
               label='Email'
               placeholder='johnDoe@example.com'
-              defaultValue={admin.AdminEmail}
+              name='AdminEmail'
+              value={formValues.AdminEmail}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
+              <Select 
+                label='Role' 
+                defaultValue='admin'
+                name='AdminRole'
+                onChange={handleInputChange}
+              >
                 <MenuItem value='admin'>Admin</MenuItem>
                 <MenuItem value='author'>Author</MenuItem>
                 <MenuItem value='editor'>Editor</MenuItem>
@@ -127,11 +180,10 @@ const TabAccount = () => {
               <Select
                 labelId="status-select-label"
                 id="status-select"
-                name="Status"
+                name="AdminStatus"
                 label="Status"
-                value={admin.AdminStatus}
-                onChange={"handleInputChange"}
-                error={"!!errors.Status"}
+                value={formValues.AdminStatus}
+                onChange={handleInputChange}
               >
                 {['Active', 'Inactive', "Pending"].map(option => (
                   <MenuItem key={option} value={option}>
@@ -139,18 +191,38 @@ const TabAccount = () => {
                   </MenuItem>
                 ))}
               </Select>
-              {/* {errors.Status && <p>{errors.Status}</p>} */}
             </FormControl>
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='CNIC' placeholder='35201-1234567-8' defaultValue={admin.AdminCNIC} />
+            <TextField 
+              fullWidth 
+              label='CNIC' 
+              placeholder='35201-1234567-8' 
+              name='AdminCNIC' 
+              value={formValues.AdminCNIC} 
+              onChange={handleInputChange} 
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Phone Number' placeholder='+92 300 1234567' defaultValue={admin.AdminPhoneNumber} />
+            <TextField 
+              fullWidth 
+              label='Phone Number' 
+              placeholder='+92 300 1234567' 
+              name='AdminPhoneNumber' 
+              value={formValues.AdminPhoneNumber} 
+              onChange={handleInputChange} 
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Address' placeholder='1234 Main St, Apt 1A' defaultValue={admin.AdminAddress} />
+            <TextField 
+              fullWidth 
+              label='Address' 
+              placeholder='1234 Main St, Apt 1A' 
+              name='AdminAddress' 
+              value={formValues.AdminAddress} 
+              onChange={handleInputChange} 
+            />
           </Grid>
 
           {openAlert ? (
@@ -173,7 +245,7 @@ const TabAccount = () => {
           ) : null}
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
+            <Button type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
               Save Changes
             </Button>
             <Button type='reset' variant='outlined' color='secondary'>

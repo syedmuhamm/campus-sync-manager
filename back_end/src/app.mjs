@@ -73,44 +73,67 @@ app.post('/register', async (req, res) => {
 // Endpoint to update admin information
 app.put('/updateAdmin/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { firstName, lastName, email, password } = req.body;
-
+    const {
+        FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber,
+        AdminAddress, AdminStatus, AdminCreatedAt
+    } = req.body;
+    
     try {
         const connection = await pool.getConnection();
 
         // Check if a new password is provided and hash it
-        let hashedPassword;
-        if (password) {
-            hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
-        }
+        // let hashedPassword;
+        // if (password) {
+        //     hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+        // }
 
         // Construct the SQL query based on provided fields
         const fields = [];
         const values = [];
-        if (firstName) {
+
+        if (FirstName) {
             fields.push('FirstName = ?');
-            values.push(firstName);
+            values.push(FirstName);
         }
-        if (lastName) {
+        if (LastName) {
             fields.push('LastName = ?');
-            values.push(lastName);
+            values.push(LastName);
         }
-        if (email) {
+        if (AdminEmail) {
             fields.push('AdminEmail = ?');
-            values.push(email);
+            values.push(AdminEmail);
         }
-        if (hashedPassword) {
-            fields.push('AdminPassword = ?');
-            values.push(hashedPassword);
+        if (AdminCNIC) {
+            fields.push('AdminCNIC = ?');
+            values.push(AdminCNIC);
+        }
+        if (AdminPhoneNumber) {
+            fields.push('AdminPhoneNumber = ?');
+            values.push(AdminPhoneNumber);
+        }
+        if (AdminAddress) {
+            fields.push('AdminAddress = ?');
+            values.push(AdminAddress);
+        }
+        if (AdminStatus) {
+            fields.push('AdminStatus = ?');
+            values.push(AdminStatus);
+        }
+        if (AdminCreatedAt) {
+            fields.push('AdminCreatedAt = ?');
+            values.push(AdminCreatedAt);
         }
         values.push(id);
 
         const sql = `UPDATE admins SET ${fields.join(', ')} WHERE AdminID = ?`;
 
+        console.log('SQL Query:', sql);
+        console.log('Values:', values);
+
         await connection.query(sql, values);
 
         // Fetch the updated admin data
-        const [updatedAdmin] = await connection.query('SELECT AdminId, FirstName, LastName, Email, AdminCreatedAt FROM admins WHERE id = ?', [id]);
+        const [updatedAdmin] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus, AdminCreatedAt FROM admins WHERE AdminID = ?', [id]);
         connection.release();
 
         res.json(updatedAdmin[0]);
@@ -119,6 +142,8 @@ app.put('/updateAdmin/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
 
 // Protect the existing routes
 // app.use('/allData', authenticateToken);
