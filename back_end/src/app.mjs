@@ -38,7 +38,7 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const token = jwt.sign({ id: admin.AdminId, email: admin.AdminEmail }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: admin.AdminID, email: admin.AdminEmail }, JWT_SECRET, { expiresIn: '240h' });
 
         res.json({ token });
     } catch (error) {
@@ -244,11 +244,11 @@ app.get('/classes', async (req, res) => {
 });
 
 // Endpoint to get the current logged-in admin user
-app.get('/getAdmin', authenticateToken, async (req, res) => {
+app.get('/currentAdmin', authenticateToken, async (req, res) => {
     try {
         const adminId = req.admin.id;
         const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus FROM admins WHERE id = ?', [adminId]);
+        const [rows] = await connection.query('SELECT AdminID, FirstName, LastName, AdminEmail, AdminCNIC, AdminPhoneNumber, AdminAddress, AdminStatus FROM admins WHERE AdminID = ?', [adminId]);
         connection.release();
 
         if (rows.length === 0) {

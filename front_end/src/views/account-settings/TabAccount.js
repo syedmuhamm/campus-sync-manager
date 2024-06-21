@@ -1,22 +1,35 @@
-import { useState, useEffect } from 'react';
-import { Box, Grid, Link, Alert, Select, MenuItem, TextField, Typography, InputLabel, IconButton, CardContent, FormControl, Button, AlertTitle } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Close } from 'mdi-material-ui';
-import { useData } from 'src/context/dataContext';
+import { useState, useEffect } from 'react'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
+import Alert from '@mui/material/Alert'
+import Select from '@mui/material/Select'
+import { styled } from '@mui/material/styles'
+import MenuItem from '@mui/material/MenuItem'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import InputLabel from '@mui/material/InputLabel'
+import AlertTitle from '@mui/material/AlertTitle'
+import IconButton from '@mui/material/IconButton'
+import CardContent from '@mui/material/CardContent'
+import FormControl from '@mui/material/FormControl'
+import Button from '@mui/material/Button'
+import Close from 'mdi-material-ui/Close'
+import { useData } from 'src/context/dataContext'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
   height: 120,
   marginRight: theme.spacing(6.25),
   borderRadius: theme.shape.borderRadius
-}));
+}))
 
 const ButtonStyled = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width: '100%',
     textAlign: 'center'
   }
-}));
+}))
 
 const ResetButtonStyled = styled(Button)(({ theme }) => ({
   marginLeft: theme.spacing(4.5),
@@ -26,38 +39,29 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
     textAlign: 'center',
     marginTop: theme.spacing(4)
   }
-}));
+}))
 
 const TabAccount = () => {
-  const [openAlert, setOpenAlert] = useState(true);
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png');
-
-  const { appData, updateAdmin } = useData();
-  const [admin, setAdmin] = useState({});
+  const [openAlert, setOpenAlert] = useState(true)
+  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
+  const { appData } = useData()
+  const [admin, setAdmin] = useState(null)
 
   useEffect(() => {
-    // trying with logged-in admin is the first one in the array
-    const loggedInAdmin = appData.admins[0]; // Update this to fetch the correct logged-in admin
-    setAdmin(loggedInAdmin);
-  }, [appData]);
+    const currentAdmin = appData.admins.find(admin => admin.isCurrentAdmin)
+    setAdmin(currentAdmin)
+  }, [appData])
 
   const onChange = file => {
-    const reader = new FileReader();
-    const { files } = file.target;
+    const reader = new FileReader()
+    const { files } = file.target
     if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result);
-      reader.readAsDataURL(files[0]);
+      reader.onload = () => setImgSrc(reader.result)
+      reader.readAsDataURL(files[0])
     }
-  };
+  }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setAdmin({ ...admin, [name]: value });
-  };
-
-  const handleSaveChanges = async () => {
-    await updateAdmin(admin.AdminID, admin);
-  };
+  if (!admin) return <div>Loading...</div>
 
   return (
     <CardContent>
@@ -88,51 +92,27 @@ const TabAccount = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='Username'
-              name='Username'
-              value={admin.Username || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue={admin.AdminEmail} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='First Name'
-              name='FirstName'
-              value={admin.FirstName || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='First Name' placeholder='John' defaultValue={admin.FirstName} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='Last Name'
-              name='LastName'
-              value={admin.LastName || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='Last Name' placeholder='Doe' defaultValue={admin.LastName} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type='email'
               label='Email'
-              name='AdminEmail'
-              value={admin.AdminEmail || ''}
-              onChange={handleInputChange}
+              placeholder='johnDoe@example.com'
+              defaultValue={admin.AdminEmail}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Role</InputLabel>
-              <Select
-                label='Role'
-                name='Role'
-                value={admin.Role || 'admin'}
-                onChange={handleInputChange}
-              >
+              <Select label='Role' defaultValue='admin'>
                 <MenuItem value='admin'>Admin</MenuItem>
                 <MenuItem value='author'>Author</MenuItem>
                 <MenuItem value='editor'>Editor</MenuItem>
@@ -142,47 +122,35 @@ const TabAccount = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
+            <FormControl fullWidth margin="dense" variant="outlined">
+              <InputLabel id="status-select-label">Status</InputLabel>
               <Select
-                label='Status'
-                name='AdminStatus'
-                value={admin.AdminStatus || 'active'}
-                onChange={handleInputChange}
+                labelId="status-select-label"
+                id="status-select"
+                name="Status"
+                label="Status"
+                value={admin.AdminStatus}
+                onChange={"handleInputChange"}
+                error={"!!errors.Status"}
               >
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
-                <MenuItem value='pending'>Pending</MenuItem>
+                {['Active', 'Inactive', "Pending"].map(option => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
               </Select>
+              {/* {errors.Status && <p>{errors.Status}</p>} */}
             </FormControl>
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='CNIC'
-              name='AdminCNIC'
-              value={admin.AdminCNIC || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='CNIC' placeholder='35201-1234567-8' defaultValue={admin.AdminCNIC} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='Phone Number'
-              name='AdminPhoneNumber'
-              value={admin.AdminPhoneNumber || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='Phone Number' placeholder='+92 300 1234567' defaultValue={admin.AdminPhoneNumber} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='Address'
-              name='AdminAddress'
-              value={admin.AdminAddress || ''}
-              onChange={handleInputChange}
-            />
+            <TextField fullWidth label='Address' placeholder='1234 Main St, Apt 1A' defaultValue={admin.AdminAddress} />
           </Grid>
 
           {openAlert ? (
@@ -205,7 +173,7 @@ const TabAccount = () => {
           ) : null}
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={handleSaveChanges}>
+            <Button variant='contained' sx={{ marginRight: 3.5 }}>
               Save Changes
             </Button>
             <Button type='reset' variant='outlined' color='secondary'>
@@ -215,7 +183,7 @@ const TabAccount = () => {
         </Grid>
       </form>
     </CardContent>
-  );
-};
+  )
+}
 
-export default TabAccount;
+export default TabAccount

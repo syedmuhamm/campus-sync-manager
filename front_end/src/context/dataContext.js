@@ -27,17 +27,35 @@ export const DataProvider = ({ children }) => {
     try {
       // Retrieve the authentication token from local storage
       const token = localStorage.getItem('auth-token');
-      
-      // Fetch data from the backend using the token for authorization
+
+      // Fetch all data from the backend using the token for authorization
       const response = await axios.get('http://localhost:5000/allData', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      // Update the appData state with the fetched data
-      setAppData(response.data);
-      
+      // Fetch the current admin data
+      const currentAdminResponse = await axios.get('http://localhost:5000/currentAdmin', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const currentAdmin = currentAdminResponse.data;
+
+      // Update the admins array to include isCurrentAdmin property
+      const updatedAdmins = response.data.admins.map(admin => ({
+        ...admin,
+        isCurrentAdmin: admin.AdminID === currentAdmin.AdminID
+      }));
+
+      // Update the appData state with the fetched data and updated admins
+      setAppData({
+        ...response.data,
+        admins: updatedAdmins
+      });
+
       // Set loading state to false after data is fetched
       setIsLoading(false);
     } catch (error) {
@@ -92,7 +110,7 @@ export const DataProvider = ({ children }) => {
   }, [fetchData]);
 
   return (
-
+    
     // Provide the context values to the children components
     <DataContext.Provider value={{ appData, setAppData, isLoading, error, fetchData, updateAdmin, updateStudent }}>
       {children}
