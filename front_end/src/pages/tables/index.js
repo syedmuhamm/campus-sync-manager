@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
 import withAuth from 'src/lib/withAuth';
-import StudentTableMain from 'src/layouts/components/students-table/StudentTableMain';
+import StudentTableMain from 'src/views/tables/students-table/StudentTableMain';
 
 const MUITable = () => {
   return (

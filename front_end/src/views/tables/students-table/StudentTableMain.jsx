@@ -7,15 +7,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { Box } from '@mui/material';
 import { useData } from 'src/context/dataContext';
-import LoadingIndicator from '../Common/LoadingIndicator';
-import SelectClassFilter from '../Common/SelectClassFilter';
+import LoadingIndicator from '../../../layouts/components/Common/LoadingIndicator';
+import SelectClassFilter from '../../../layouts/components/Common/SelectClassFilter';
 import StudentTableHeader from './StudentTableHeader';
-import StudentEditModal from '../modals/student-modals/StudentEditModal';
+import StudentEditModal from '../../../layouts/components/modals/student-modals/StudentEditModal';
 import { filterStudentsViaSelectedClassAndSection } from 'src/utils/dataUtils';
-import FeeDisabledStudentsFilter from '../common/FeeDisabledStudentsFilter';
-import SelectSectionFilter from '../common/SelectSectionFilter';
-import ActionButtons from '../Common/ActionButtons';
-import FeePaidSwitch from '../common/FreePaidSwitch';
+import FeeDisabledStudentsFilter from '../../../layouts/components/common/FeeDisabledStudentsFilter';
+import SelectSectionFilter from '../../../layouts/components/common/SelectSectionFilter';
+import ActionButtons from '../../../layouts/components/Common/ActionButtons';
+import FeePaidSwitch from '../../../layouts/components/common/FreePaidSwitch';
 import StudentTablePagination from './StudennTablePagination';
 
 const StudentTableMain = () => {
