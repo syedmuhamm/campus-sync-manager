@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
 import {
   Box, Grid, Button, CardContent, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Alert, AlertTitle, IconButton,
   Link,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Close from 'mdi-material-ui/Close';
-import { useData } from 'src/context/dataContext';
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -31,67 +29,17 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
   },
 }));
 
-const TabAccount = () => {
-  const [openAlert, setOpenAlert] = useState(true);
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png');
-  const { appData, updateAdmin, setAppData } = useData();
-  const [admin, setAdmin] = useState(null);
-  const [formValues, setFormValues] = useState({
-    AdminEmail: '',
-    FirstName: '',
-    LastName: '',
-    AdminStatus: '',
-    AdminCNIC: '',
-    AdminPhoneNumber: '',
-    AdminAddress: '',
-  });
-
-  useEffect(() => {
-    const currentAdmin = appData.admins.find((admin) => admin.isCurrentAdmin);
-    if (currentAdmin) {
-      setAdmin(currentAdmin);
-      setFormValues({
-        AdminEmail: currentAdmin.AdminEmail,
-        FirstName: currentAdmin.FirstName,
-        LastName: currentAdmin.LastName,
-        AdminStatus: currentAdmin.AdminStatus,
-        AdminCNIC: currentAdmin.AdminCNIC,
-        AdminPhoneNumber: currentAdmin.AdminPhoneNumber,
-        AdminAddress: currentAdmin.AdminAddress,
-      });
-    }
-  }, [appData]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSaveChanges = async () => {
-    if (admin) {
-      const updatedAdmin = { ...admin, ...formValues };
-      const response = await updateAdmin(admin.AdminID, updatedAdmin);
-      if (response) {
-        setAppData((prevData) => ({
-          ...prevData,
-          admins: prevData.admins.map((adm) => (adm.AdminID === admin.AdminID ? updatedAdmin : adm)),
-        }));
-      }
-    }
-  };
-
-  const onChange = (file) => {
-    const reader = new FileReader();
-    const { files } = file.target;
-    if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result);
-      reader.readAsDataURL(files[0]);
-    }
-  };
-
+const TabAccount = ({
+  openAlert,
+  setOpenAlert,
+  imgSrc,
+  setImgSrc,
+  admin,
+  formValues,
+  handleInputChange,
+  handleSaveChanges,
+  onChange,
+}) => {
   if (!admin) return <div>Loading...</div>;
 
   return (
