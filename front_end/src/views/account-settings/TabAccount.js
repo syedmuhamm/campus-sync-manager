@@ -1,35 +1,25 @@
-import { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
-import Alert from '@mui/material/Alert'
-import Select from '@mui/material/Select'
-import { styled } from '@mui/material/styles'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import AlertTitle from '@mui/material/AlertTitle'
-import IconButton from '@mui/material/IconButton'
-import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import Button from '@mui/material/Button'
-import Close from 'mdi-material-ui/Close'
-import { useData } from 'src/context/dataContext'
+import { useState, useEffect } from 'react';
+import {
+  Box, Grid, Button, CardContent, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Alert, AlertTitle, IconButton,
+  Link,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Close from 'mdi-material-ui/Close';
+import { useData } from 'src/context/dataContext';
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
   height: 120,
   marginRight: theme.spacing(6.25),
-  borderRadius: theme.shape.borderRadius
-}))
+  borderRadius: theme.shape.borderRadius,
+}));
 
 const ButtonStyled = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width: '100%',
-    textAlign: 'center'
-  }
-}))
+    textAlign: 'center',
+  },
+}));
 
 const ResetButtonStyled = styled(Button)(({ theme }) => ({
   marginLeft: theme.spacing(4.5),
@@ -37,15 +27,15 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
     width: '100%',
     marginLeft: 0,
     textAlign: 'center',
-    marginTop: theme.spacing(4)
-  }
-}))
+    marginTop: theme.spacing(4),
+  },
+}));
 
 const TabAccount = () => {
-  const [openAlert, setOpenAlert] = useState(true)
-  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
-  const { appData, updateAdmin } = useData()
-  const [admin, setAdmin] = useState(null)
+  const [openAlert, setOpenAlert] = useState(true);
+  const [imgSrc, setImgSrc] = useState('/images/avatars/1.png');
+  const { appData, updateAdmin, setAppData } = useData();
+  const [admin, setAdmin] = useState(null);
   const [formValues, setFormValues] = useState({
     AdminEmail: '',
     FirstName: '',
@@ -53,13 +43,13 @@ const TabAccount = () => {
     AdminStatus: '',
     AdminCNIC: '',
     AdminPhoneNumber: '',
-    AdminAddress: ''
-  })
+    AdminAddress: '',
+  });
 
   useEffect(() => {
-    const currentAdmin = appData.admins.find(admin => admin.isCurrentAdmin)
+    const currentAdmin = appData.admins.find((admin) => admin.isCurrentAdmin);
     if (currentAdmin) {
-      setAdmin(currentAdmin)
+      setAdmin(currentAdmin);
       setFormValues({
         AdminEmail: currentAdmin.AdminEmail,
         FirstName: currentAdmin.FirstName,
@@ -67,37 +57,42 @@ const TabAccount = () => {
         AdminStatus: currentAdmin.AdminStatus,
         AdminCNIC: currentAdmin.AdminCNIC,
         AdminPhoneNumber: currentAdmin.AdminPhoneNumber,
-        AdminAddress: currentAdmin.AdminAddress
-      })
+        AdminAddress: currentAdmin.AdminAddress,
+      });
     }
-  }, [appData])
+  }, [appData]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormValues({
-      ...formValues,
-      [name]: value
-    })
-  }
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
 
   const handleSaveChanges = async () => {
     if (admin) {
-      const updatedAdmin = { ...admin, ...formValues }
-      await updateAdmin(admin.AdminID, updatedAdmin)
-      setFormValues(updatedAdmin); // Update form values after save
+      const updatedAdmin = { ...admin, ...formValues };
+      const response = await updateAdmin(admin.AdminID, updatedAdmin);
+      if (response) {
+        setAppData((prevData) => ({
+          ...prevData,
+          admins: prevData.admins.map((adm) => (adm.AdminID === admin.AdminID ? updatedAdmin : adm)),
+        }));
+      }
     }
-  }
+  };
 
-  const onChange = file => {
-    const reader = new FileReader()
-    const { files } = file.target
+  const onChange = (file) => {
+    const reader = new FileReader();
+    const { files } = file.target;
     if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result)
-      reader.readAsDataURL(files[0])
+      reader.onload = () => setImgSrc(reader.result);
+      reader.readAsDataURL(files[0]);
     }
-  }
+  };
 
-  if (!admin) return <div>Loading...</div>
+  if (!admin) return <div>Loading...</div>;
 
   return (
     <CardContent>
@@ -127,23 +122,23 @@ const TabAccount = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='First Name' 
-              placeholder='John' 
-              name='FirstName' 
-              value={formValues.FirstName} 
-              onChange={handleInputChange} 
+            <TextField
+              fullWidth
+              label='First Name'
+              placeholder='John'
+              name='FirstName'
+              value={formValues.FirstName}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Last Name' 
-              placeholder='Doe' 
-              name='LastName' 
-              value={formValues.LastName} 
-              onChange={handleInputChange} 
+            <TextField
+              fullWidth
+              label='Last Name'
+              placeholder='Doe'
+              name='LastName'
+              value={formValues.LastName}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -157,13 +152,13 @@ const TabAccount = () => {
               onChange={handleInputChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Role</InputLabel>
-              <Select 
-                label='Role' 
-                defaultValue='admin'
+              <Select
+                label='Role'
                 name='AdminRole'
+                value={formValues.AdminRole}
                 onChange={handleInputChange}
               >
                 <MenuItem value='admin'>Admin</MenuItem>
@@ -173,7 +168,7 @@ const TabAccount = () => {
                 <MenuItem value='subscriber'>Subscriber</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="dense" variant="outlined">
               <InputLabel id="status-select-label">Status</InputLabel>
@@ -193,35 +188,34 @@ const TabAccount = () => {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='CNIC' 
-              placeholder='35201-1234567-8' 
-              name='AdminCNIC' 
-              value={formValues.AdminCNIC} 
-              onChange={handleInputChange} 
+            <TextField
+              fullWidth
+              label='CNIC'
+              placeholder='35201-1234567-8'
+              name='AdminCNIC'
+              value={formValues.AdminCNIC}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Phone Number' 
-              placeholder='+92 300 1234567' 
-              name='AdminPhoneNumber' 
-              value={formValues.AdminPhoneNumber} 
-              onChange={handleInputChange} 
+            <TextField
+              fullWidth
+              label='Phone Number'
+              placeholder='+92 300 1234567'
+              name='AdminPhoneNumber'
+              value={formValues.AdminPhoneNumber}
+              onChange={handleInputChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField 
-              fullWidth 
-              label='Address' 
-              placeholder='1234 Main St, Apt 1A' 
-              name='AdminAddress' 
-              value={formValues.AdminAddress} 
-              onChange={handleInputChange} 
+            <TextField
+              fullWidth
+              label='Address'
+              placeholder='1234 Main St, Apt 1A'
+              name='AdminAddress'
+              value={formValues.AdminAddress}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -255,7 +249,7 @@ const TabAccount = () => {
         </Grid>
       </form>
     </CardContent>
-  )
-}
+  );
+};
 
-export default TabAccount
+export default TabAccount;
