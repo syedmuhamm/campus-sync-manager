@@ -4,20 +4,20 @@ import { Magnify } from 'mdi-material-ui'
 import { debounce } from 'lodash'
 import { useData } from 'src/context/dataContext'
 import dayjs from 'dayjs'
+import CardUser from 'src/views/cards/CardUser'
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
-  const { appData} = useData();  // accessing data from dataContext.js
-
+  const [selectedItem, setSelectedItem] = useState(null) // State for selected item
+  const { appData } = useData();  // accessing data from dataContext.js
 
   // Function to search for users based on searchTerm
   const searchData = useCallback(async (term) => {
     setLoading(true)
 
-    // const data = await fetchData()
     const lowerCaseTerm = term.toLowerCase()
 
     const results = appData.students.filter(
@@ -26,6 +26,7 @@ const SearchBar = () => {
           || student.LastName.toLowerCase().includes(lowerCaseTerm)
           || student.StudentEmail.toLowerCase().includes(lowerCaseTerm)
           || student.StudentAddress.toLowerCase().includes(lowerCaseTerm));
+
     setLoading(false)
 
     return results
@@ -44,7 +45,6 @@ const SearchBar = () => {
     if (searchTerm.trim() === '') {
       setSearchResults([])
       setSuggestionsOpen(false)
-
       return
     }
 
@@ -61,6 +61,7 @@ const SearchBar = () => {
 
   // Function to handle item click in suggestions
   const handleItemClick = (item) => {
+    setSelectedItem(item)  // Set selected item
     setSearchTerm(`${item.FirstName} ${item.LastName}`)
     setSearchResults([]) // Clear suggestions
     setSuggestionsOpen(false) // Hide suggestions
@@ -96,17 +97,15 @@ const SearchBar = () => {
         onBlur={handleBlur}
         placeholder='Search users...'
         sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 4,
-              
-              // Adjust padding and font size for a larger text field
-              padding: '0px 35px', 
-              fontSize: '16px',
-            },
-            '& .MuiInputLabel-outlined': {
-              fontSize: '16px',
-            },
-          }}
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 4,
+            padding: '0px 35px', 
+            fontSize: '16px',
+          },
+          '& .MuiInputLabel-outlined': {
+            fontSize: '16px',
+          },
+        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
@@ -122,17 +121,26 @@ const SearchBar = () => {
           )
         }}
       />
+      {selectedItem && (
+        <CardUser
+          firstName={selectedItem.FirstName}
+          lastName={selectedItem.LastName}
+          fatherName={selectedItem.StudentFatherName}
+          age={calculateAge(selectedItem.DateOfBirth)}
+          address={selectedItem.StudentAddress}
+        />
+      )}
       {suggestionsOpen && searchResults.length > 0 && (
         <Box sx={{ position: 'absolute', top: '100%', left: 0, right: 0, bgcolor: 'background.paper', boxShadow: 3, zIndex: 1, maxHeight: 300, overflow: 'auto' }}>
           <List>
             {searchResults.map((result, index) => (
-               <ListItem key={index} button onClick={() => handleItemClick(result)}>
-               <Avatar src="" alt="Student Image" sx={{ marginRight: 2 }} />
-               <ListItemText 
-                 primary={`${result.FirstName} ${result.LastName}`} 
-                 secondary={`W/O ${result.StudentFatherName}, ${calculateAge(result.DateOfBirth)}, ${result.StudentAddress}`}
-                 />
-             </ListItem>
+              <ListItem key={index} button onClick={() => handleItemClick(result)}>
+                <Avatar src="" alt="Student Image" sx={{ marginRight: 2 }} />
+                <ListItemText 
+                  primary={`${result.FirstName} ${result.LastName}`} 
+                  secondary={`W/O ${result.StudentFatherName}, ${calculateAge(result.DateOfBirth)}, ${result.StudentAddress}`}
+                />
+              </ListItem>
             ))}
           </List>
         </Box>

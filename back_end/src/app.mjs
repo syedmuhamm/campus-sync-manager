@@ -126,10 +126,7 @@ app.put('/updateAdmin/:id', authenticateToken, async (req, res) => {
         values.push(id);
 
         const sql = `UPDATE admins SET ${fields.join(', ')} WHERE AdminID = ?`;
-
-        console.log('SQL Query:', sql);
-        console.log('Values:', values);
-
+        
         await connection.query(sql, values);
 
         // Fetch the updated admin data
