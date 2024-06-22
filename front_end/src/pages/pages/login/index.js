@@ -39,6 +39,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout';
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration';
+import { useData } from 'src/context/dataContext';
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -70,6 +71,7 @@ const LoginPage = () => {
   // ** Hook
   const theme = useTheme();
   const router = useRouter();
+  const { fetchData } = useData();
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -97,6 +99,7 @@ const LoginPage = () => {
 
       // Save the token to localStorage
       localStorage.setItem('auth-token', response.data.token);
+      await fetchData(); // to make sure that all data is loaded on login
 
       router.push('/'); // Redirect user to dashboard after successful login
     } catch (error) {

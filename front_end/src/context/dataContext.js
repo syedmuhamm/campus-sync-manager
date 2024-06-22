@@ -1,4 +1,3 @@
-// src/DataContext.js
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
@@ -27,6 +26,9 @@ export const DataProvider = ({ children }) => {
     try {
       // Retrieve the authentication token from local storage
       const token = localStorage.getItem('auth-token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
 
       // Fetch all data from the backend using the token for authorization
       const response = await axios.get('http://localhost:5000/allData', {
@@ -59,8 +61,13 @@ export const DataProvider = ({ children }) => {
       // Set loading state to false after data is fetched
       setIsLoading(false);
     } catch (error) {
-      // Handle any errors that occur during the fetch
-      setError('Error fetching data');
+      if (error.response && error.response.status === 403) {
+        setError('Access denied. Please log in again.');
+        localStorage.removeItem('auth-token');
+        // Optionally redirect to login page here
+      } else {
+        setError('Error fetching data');
+      }
       setIsLoading(false);
       console.error('Error fetching data:', error);
     }
@@ -104,9 +111,13 @@ export const DataProvider = ({ children }) => {
     return await updateData(`http://localhost:5000/updateStudent/${id}`, id, updatedStudent, 'students');
   };
 
-  // useEffect to fetch data on component mount
+  // Check for token in localStorage and fetch data on mount
   useEffect(() => {
-    fetchData();
+    if (localStorage.getItem('auth-token')) {
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
   }, [fetchData]);
 
   return (
