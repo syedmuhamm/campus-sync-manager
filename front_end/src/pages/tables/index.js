@@ -22,7 +22,7 @@ const MUITable = () => {
       <Grid item xs={12}>
         <Card>
           <CardHeader
-            title="Student Table"
+            title="Students Table"
             titleTypographyProps={{ variant: 'h6', color: 'primary' }} // Set title color to primary
             subheader="Student table displays all students data. They can be categorized on class base or unpaid fee based."
           />

@@ -62,7 +62,12 @@ const navigation = () => {
       path: '/cards'
     },
     {
-      title: 'Tables',
+      title: 'Students',
+      icon: Table,
+      path: '/tables'
+    },
+    {
+      title: 'Classes',
       icon: Table,
       path: '/tables'
     },

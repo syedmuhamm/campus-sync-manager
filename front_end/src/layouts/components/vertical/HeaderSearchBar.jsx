@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { TextField, Box, CircularProgress, List, ListItem, ListItemText, InputAdornment, Avatar } from '@mui/material'
-import { Magnify } from 'mdi-material-ui'
-import { debounce } from 'lodash'
-import { useData } from 'src/context/dataContext'
-import dayjs from 'dayjs'
-import CardUser from 'src/views/cards/CardUser'
+import React, { useState, useEffect, useCallback } from 'react';
+import { TextField, Box, CircularProgress, List, ListItem, ListItemText, InputAdornment, Avatar, Dialog } from '@mui/material';
+import { Magnify } from 'mdi-material-ui';
+import { debounce } from 'lodash';
+import { useData } from 'src/context/dataContext';
+import dayjs from 'dayjs';
+import StudentInfoDialogBox from 'src/views/cards/StudentInfoDialogBox';
 
 const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(null) // State for selected item
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null); // State for selected item
   const { appData } = useData();  // accessing data from dataContext.js
 
   // Function to search for users based on searchTerm
   const searchData = useCallback(async (term) => {
-    setLoading(true)
+    setLoading(true);
 
-    const lowerCaseTerm = term.toLowerCase()
+    const lowerCaseTerm = term.toLowerCase();
 
     const results = appData.students.filter(
       student => 
@@ -27,56 +27,60 @@ const SearchBar = () => {
           || student.StudentEmail.toLowerCase().includes(lowerCaseTerm)
           || student.StudentAddress.toLowerCase().includes(lowerCaseTerm));
 
-    setLoading(false)
+    setLoading(false);
 
-    return results
-  }, [appData.students])
+    return results;
+  }, [appData.students]);
 
   // Debounced search function that returns a promise
   const debouncedSearch = useCallback(
     debounce((term, resolve) => {
-      searchData(term).then(resolve)
+      searchData(term).then(resolve);
     }, 300),
     [searchData]
-  )
+  );
 
   // Effect to handle search term changes and trigger search
   useEffect(() => {
     if (searchTerm.trim() === '') {
-      setSearchResults([])
-      setSuggestionsOpen(false)
-      return
+      setSearchResults([]);
+      setSuggestionsOpen(false);
+      return;
     }
 
     new Promise(resolve => debouncedSearch(searchTerm, resolve)).then(results => {
-      setSearchResults(results)
-      setSuggestionsOpen(true)
-    })
+      setSearchResults(results);
+      setSuggestionsOpen(true);
+    });
 
     // Clean up debounced function on component unmount
     return () => {
-      debouncedSearch.cancel()
-    }
-  }, [searchTerm, debouncedSearch])
+      debouncedSearch.cancel();
+    };
+  }, [searchTerm, debouncedSearch]);
 
   // Function to handle item click in suggestions
   const handleItemClick = (item) => {
-    setSelectedItem(item)  // Set selected item
-    setSearchTerm(`${item.FirstName} ${item.LastName}`)
-    setSearchResults([]) // Clear suggestions
-    setSuggestionsOpen(false) // Hide suggestions
-  }
+    setSelectedItem(item);  // Set selected item
+    setSearchTerm(`${item.FirstName} ${item.LastName}`);
+    setSearchResults([]); // Clear suggestions
+    setSuggestionsOpen(false); // Hide suggestions
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+  };
 
   const handleFocus = () => {
-    setSuggestionsOpen(true)
-  }
+    setSuggestionsOpen(true);
+  };
 
   const handleBlur = () => {
     // Delay closing suggestions to allow click event to trigger
     setTimeout(() => {
-      setSuggestionsOpen(false)
-    }, 200)
-  }
+      setSuggestionsOpen(false);
+    }, 200);
+  };
 
   const calculateAge = (dateOfBirth) => {
     const dob = dayjs(dateOfBirth);
@@ -122,13 +126,9 @@ const SearchBar = () => {
         }}
       />
       {selectedItem && (
-        <CardUser
-          firstName={selectedItem.FirstName}
-          lastName={selectedItem.LastName}
-          fatherName={selectedItem.StudentFatherName}
-          age={calculateAge(selectedItem.DateOfBirth)}
-          address={selectedItem.StudentAddress}
-        />
+        <Dialog open={!!selectedItem} onClose={handleClose}>
+          <StudentInfoDialogBox user={selectedItem} />
+        </Dialog>
       )}
       {suggestionsOpen && searchResults.length > 0 && (
         <Box sx={{ position: 'absolute', top: '100%', left: 0, right: 0, bgcolor: 'background.paper', boxShadow: 3, zIndex: 1, maxHeight: 300, overflow: 'auto' }}>
@@ -146,7 +146,7 @@ const SearchBar = () => {
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
