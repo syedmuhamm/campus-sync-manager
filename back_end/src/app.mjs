@@ -157,7 +157,7 @@ app.get('/allData', async (req, res) => {
         const [studentsRows] = await connection.query('SELECT * FROM students');
 
         // Query to retrieve all teacher data
-        const [teachersRows] = await connection.query('SELECT * FROM teachers');
+        // const [teachersRows] = await connection.query('SELECT * FROM teachers');
 
         // Query to retrieve all class data
         const [classesRows] = await connection.query('SELECT * FROM classes');
@@ -173,7 +173,7 @@ app.get('/allData', async (req, res) => {
         // Constructing the API response object
         const responseData = {
             students: studentsRows,
-            teachers: teachersRows,
+            // teachers: teachersRows,
             classes: classesRows,
             classSections: classSectionsRows,
             admins: adminsRows
@@ -240,17 +240,17 @@ app.put('/updateStudent/:id', async (req, res) => {
 
 
 // Endpoint to get all teachers
-app.get('/teachers', async (req, res) => {
-    try {
-        const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT * FROM teachers');
-        connection.release();
-        res.json(rows);
-    } catch (error) {
-        console.error('Error executing query:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
+// app.get('/teachers', async (req, res) => {
+//     try {
+//         const connection = await pool.getConnection();
+//         const [rows] = await connection.query('SELECT * FROM teachers');
+//         connection.release();
+//         res.json(rows);
+//     } catch (error) {
+//         console.error('Error executing query:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 // Endpoint to get all classes
 app.get('/classes', async (req, res) => {
