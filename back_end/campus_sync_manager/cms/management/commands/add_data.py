@@ -1,42 +1,49 @@
 from django.core.management.base import BaseCommand
 from cms.models import Admin, StudentClass, ClassSection, Student
 from datetime import date
+import bcrypt
 
 class Command(BaseCommand):
     help = 'Add initial data to the database'
 
     def handle(self, *args, **kwargs):
         # Add data to Admin model
-        Admin.objects.create(
-            first_name='John',
-            last_name='Doe',
-            admin_email='john.doe@example.com',
-            admin_password='password123',  # Remember to hash passwords in a real application
-            admin_cnic='12345-6789012-3',
-            admin_phone_number='1234567890',
-            admin_address='123 Main St',
-            admin_status='A'
-        )
-        Admin.objects.create(
-            first_name='Jane',
-            last_name='Smith',
-            admin_email='jane.smith@example.com',
-            admin_password='password123',
-            admin_cnic='12345-6789012-4',
-            admin_phone_number='0987654321',
-            admin_address='456 Elm St',
-            admin_status='A'
-        )
-        Admin.objects.create(
-            first_name='Alice',
-            last_name='Johnson',
-            admin_email='alice.johnson@example.com',
-            admin_password='password123',
-            admin_cnic='12345-6789012-5',
-            admin_phone_number='1122334455',
-            admin_address='789 Pine St',
-            admin_status='A'
-        )
+        admins = [
+            {
+                'first_name': 'John',
+                'last_name': 'Doe',
+                'admin_email': 'john.doe@example.com',
+                'admin_password': 'password123',  # Plain text password
+                'admin_cnic': '12345-6789012-3',
+                'admin_phone_number': '1234567890',
+                'admin_address': '123 Main St',
+                'admin_status': 'A'
+            },
+            {
+                'first_name': 'Jane',
+                'last_name': 'Smith',
+                'admin_email': 'jane.smith@example.com',
+                'admin_password': 'password123',
+                'admin_cnic': '12345-6789012-4',
+                'admin_phone_number': '0987654321',
+                'admin_address': '456 Elm St',
+                'admin_status': 'A'
+            },
+            {
+                'first_name': 'Alice',
+                'last_name': 'Johnson',
+                'admin_email': 'alice.johnson@example.com',
+                'admin_password': 'password123',
+                'admin_cnic': '12345-6789012-5',
+                'admin_phone_number': '1122334455',
+                'admin_address': '789 Pine St',
+                'admin_status': 'A'
+            }
+        ]
+
+        for admin_data in admins:
+            admin_data['admin_password'] = bcrypt.hashpw(admin_data['admin_password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            Admin.objects.create(**admin_data)
 
         # Add data to StudentClass model
         class_1 = StudentClass.objects.create(

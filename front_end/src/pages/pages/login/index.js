@@ -87,7 +87,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', {
+      const response = await axios.post('http://localhost:8000/cms/admins/login/', {
         email: values.email,
         password: values.password
       }, {
@@ -98,15 +98,16 @@ const LoginPage = () => {
       });
 
       // Save the token to localStorage
-      localStorage.setItem('auth-token', response.data.token);
+      localStorage.setItem('auth-token', response.data.access);
       await fetchData(); // to make sure that all data is loaded on login
 
       router.push('/'); // Redirect user to dashboard after successful login
     } catch (error) {
       console.error('Error logging in:', error); // Handle error response
+      // Optionally show error message to the user
     }
   };
-
+  
   return (
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>

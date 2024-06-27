@@ -11,22 +11,33 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+# Load environment variables
+DJANGO_SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback_secret_key')
+DJANGO_DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+JWT_SECRET = os.getenv('JWT_SECRET', 'fallback_jwt_secret')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^%-e2r_rya$&8mq16s)$l9tru6+yn5gt)j_ofp79j-b!+3c(7#'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-^%-e2r_rya$&8mq16s)$l9tru6+yn5gt)j_ofp79j-b!+3c(7#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+print(f"DEBUG is set to: {DEBUG}")
 
-ALLOWED_HOSTS = []
+# Set ALLOWED_HOSTS based on DEBUG value
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com', '127.0.0.1']
 
+print(f"ALLOWED_HOSTS is set to: {ALLOWED_HOSTS}")
 
 # Application definition
 
@@ -39,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cms',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'campus_sync_manager.urls'
@@ -86,8 +99,6 @@ DATABASES = {
     }
 }
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -106,7 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -117,7 +127,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -139,4 +148,12 @@ REST_FRAMEWORK = {
 }
 
 # Secret key for JWT (should be stored in environment variables)
-JWT_SECRET = 'your_jwt_secret'
+JWT_SECRET = os.getenv('JWT_SECRET', 'your_jwt_secret')
+
+CORS_ALLOW_ALL_ORIGINS = True  # For development only, restrict in production
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']  # Adjust if needed
+
+# JWT settings
+from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
+jwt_api_settings.USER_ID_FIELD = 'admin_id'

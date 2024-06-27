@@ -46,6 +46,7 @@ const App = props => {
   // ** Check authentication token on initial load
   useEffect(() => {
     const token = localStorage.getItem('auth-token')
+    console.log(localStorage, "localStorage")
     // If token is missing and the current route is not the login page, redirect to login
     if (!token && router.pathname !== '/pages/login') {
       router.replace('/pages/login')

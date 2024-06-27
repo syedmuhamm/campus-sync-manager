@@ -7,7 +7,6 @@ export const DataProvider = ({ children }) => {
   const [appData, setAppData] = useState({
     admins: [],
     students: [],
-    // teachers: [],
     classes: [],
     class_sections: []
   });
@@ -22,13 +21,13 @@ export const DataProvider = ({ children }) => {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get('http://localhost:8000/api/all_data/', {
+      const response = await axios.get('http://localhost:8000/cms/all_data/', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      const currentAdminResponse = await axios.get('http://localhost:8000/api/admins/current/', {
+      const currentAdminResponse = await axios.get('http://localhost:8000/cms/admins/current/', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -48,8 +47,8 @@ export const DataProvider = ({ children }) => {
 
       setIsLoading(false);
     } catch (error) {
-      if (error.response && error.response.status === 403) {
-        setError('Access denied. Please log in again.');
+      if (error.response && error.response.status === 401) {
+        setError('Session expired. Please log in again.');
         localStorage.removeItem('auth-token');
       } else {
         setError('Error fetching data');
@@ -81,11 +80,11 @@ export const DataProvider = ({ children }) => {
   };
 
   const updateAdmin = async (id, updatedAdmin) => {
-    return await updateData(`http://localhost:8000/api/admins/${id}/`, id, updatedAdmin, 'admins');
+    return await updateData(`http://localhost:8000/cms/admins/${id}/`, id, updatedAdmin, 'admins');
   };
 
   const updateStudent = async (id, updatedStudent) => {
-    return await updateData(`http://localhost:8000/api/students/${id}/`, id, updatedStudent, 'students');
+    return await updateData(`http://localhost:8000/cms/students/${id}/`, id, updatedStudent, 'students');
   };
 
   useEffect(() => {
