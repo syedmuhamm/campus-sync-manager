@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.hashers import check_password
 from .models import Admin, Student, StudentClass, ClassSection
 from .serializers import AdminSerializer, StudentSerializer, StudentClassSerializer, ClassSectionSerializer
 import bcrypt
-from django.db import models
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class AdminViewSet(viewsets.ModelViewSet):
     queryset = Admin.objects.all()
@@ -40,21 +39,28 @@ class AdminViewSet(viewsets.ModelViewSet):
             'access': str(refresh.access_token),
         })
 
-    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def current(self, request):
-        token = request.META.get('HTTP_AUTHORIZATION', "").split('Bearer ')[-1]
-        if not token:
-            return Response({'error': 'No token provided'}, status=status.HTTP_401_UNAUTHORIZED)
-
         try:
-            print(RefreshToken(token, "token"))
-            payload = RefreshToken(token)
-            admin_id = payload['user_id']
-            admin = Admin.objects.get(admin_id=admin_id)
+            # Extract token from Authorization header
+            auth_header = request.META.get('HTTP_AUTHORIZATION', "")
+            if not auth_header.startswith('Bearer '):
+                return Response({'error': 'No token provided'}, status=status.HTTP_401_UNAUTHORIZED)
+
+            token = auth_header.split('Bearer ')[-1]
+
+            # Validate token and get user data
+            jwt_authentication = JWTAuthentication()
+            validated_token = jwt_authentication.get_validated_token(token)
+            user = jwt_authentication.get_user(validated_token)
+
+            # Assuming Admin model has a field 'id', adjust this according to your actual model
+            admin = Admin.objects.get(id=user.id)
             serializer = AdminSerializer(admin)
             return Response(serializer.data)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
 
     @action(detail=True, methods=['put'])
     def update_admin(self, request, pk=None):
@@ -63,6 +69,13 @@ class AdminViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'update_admin']:  # Adjust actions as needed
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]  # Default to AllowAny for other actions
+        return [permission() for permission in permission_classes]
 
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
@@ -77,6 +90,9 @@ class ClassSectionViewSet(viewsets.ModelViewSet):
     serializer_class = ClassSectionSerializer
 
 class AllDataViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         students = Student.objects.all()
         classes = StudentClass.objects.all()

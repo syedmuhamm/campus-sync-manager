@@ -6,7 +6,9 @@ class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = '__all__'
-        extra_kwargs = {'admin_password': {'write_only': True}}
+        # extra_kwargs = {'admin_password': {'write_only': True}}
+        exclude = ['admin_password']  # Exclude password field
+
 
     def create(self, validated_data):
         password = validated_data.pop('admin_password')

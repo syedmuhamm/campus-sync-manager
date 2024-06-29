@@ -99,6 +99,7 @@ const LoginPage = () => {
 
       // Save the token to localStorage
       localStorage.setItem('auth-token', response.data.access);
+      localStorage.setItem('refresh-token', response.data.refresh);
       await fetchData(); // to make sure that all data is loaded on login
 
       router.push('/'); // Redirect user to dashboard after successful login

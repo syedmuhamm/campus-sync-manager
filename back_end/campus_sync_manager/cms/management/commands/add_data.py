@@ -30,10 +30,10 @@ class Command(BaseCommand):
                 'admin_status': 'A'
             },
             {
-                'first_name': 'Alice',
-                'last_name': 'Johnson',
-                'admin_email': 'alice.johnson@example.com',
-                'admin_password': 'password123',
+                'first_name': 'test',
+                'last_name': 'test',
+                'admin_email': 'test@gmail.com',
+                'admin_password': 'test',
                 'admin_cnic': '12345-6789012-5',
                 'admin_phone_number': '1122334455',
                 'admin_address': '789 Pine St',

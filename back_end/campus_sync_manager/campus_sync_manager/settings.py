@@ -19,13 +19,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# Load environment variables
-DJANGO_SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback_secret_key')
-DJANGO_DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-JWT_SECRET = os.getenv('JWT_SECRET', 'fallback_jwt_secret')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-^%-e2r_rya$&8mq16s)$l9tru6+yn5gt)j_ofp79j-b!+3c(7#')
+
+# Load environment variables
+# DJANGO_SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'fallback_secret_key')
+# DJANGO_DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+# JWT_SECRET = os.getenv('JWT_SECRET', 'fallback_jwt_secret')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     'cms',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -148,7 +151,7 @@ REST_FRAMEWORK = {
 }
 
 # Secret key for JWT (should be stored in environment variables)
-JWT_SECRET = os.getenv('JWT_SECRET', 'your_jwt_secret')
+# JWT_SECRET = os.getenv('JWT_SECRET', 'your_jwt_secret')
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only, restrict in production
 
@@ -156,4 +159,35 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']  # Adjust if needed
 
 # JWT settings
 from rest_framework_simplejwt.settings import api_settings as jwt_api_settings
-jwt_api_settings.USER_ID_FIELD = 'admin_id'
+jwt_api_settings.USER_ID_FIELD = 'id'
+
+# settings.py
+from datetime import timedelta
+
+# Add simple JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=55),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=55),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
