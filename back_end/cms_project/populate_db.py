@@ -1,34 +1,62 @@
-# populate_db.py
-
 import os
 import django
 
+# Set up Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms_project.settings')
 django.setup()
 
+# Import necessary models after Django setup
+from django.contrib.auth.models import User
 from cms_app.models import Admin, Student
 
+def delete_existing_data():
+    print("Deleting existing data...")
+    User.objects.all().delete()
+    Admin.objects.all().delete()
+    Student.objects.all().delete()
+    print("Existing data deleted.")
+
 def populate_admin():
+    # User 1
+    user1 = User.objects.create_user(
+        username='anna',
+        email='anna@example.com',
+        password='securepassword12311',
+        first_name='John',
+        last_name='Doe'
+    )
+    
     Admin.objects.create(
-        FirstName='John',
-        LastName='Doe',
-        AdminEmail='john.doe@example.com',
-        AdminCNIC='12345-6789012-3',
+        user=user1,
+        FirstName=user1.first_name,
+        LastName=user1.last_name,
+        AdminEmail=user1.email,
+        AdminCNIC='12345-111111-3',
         AdminPhoneNumber='1234567890',
         AdminAddress='123 Main St, City, Country',
         AdminStatus='Active',
-        Password='securepassword123'
+        Password='securepassword12311'
     )
 
+    # User 2
+    user2 = User.objects.create_user(
+        username='janesmith1111',
+        email='jane.smith1111@example.com1',
+        password='anothersecurepassword4561',
+        first_name='Jane',
+        last_name='Smith'
+    )
+    
     Admin.objects.create(
-        FirstName='Jane',
-        LastName='Smith',
-        AdminEmail='jane.smith@example.com',
-        AdminCNIC='98765-4321098-7',
+        user=user2,
+        FirstName=user2.first_name,
+        LastName=user2.last_name,
+        AdminEmail=user2.email,
+        AdminCNIC='98765-222222-7',
         AdminPhoneNumber='0987654321',
         AdminAddress='456 Elm St, City, Country',
         AdminStatus='Active',
-        Password='anothersecurepassword456'
+        Password='anothersecurepassword4561'
     )
 
 def populate_student():
@@ -69,6 +97,7 @@ def populate_student():
     )
 
 if __name__ == '__main__':
+    delete_existing_data()  # Delete existing data before populating
     populate_admin()
     populate_student()
     print("Database populated successfully!")

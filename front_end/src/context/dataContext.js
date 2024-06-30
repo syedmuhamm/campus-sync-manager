@@ -28,18 +28,23 @@ export const DataProvider = ({ children }) => {
       //   }
       // });      
 
-      // const response = await axios.get('http://localhost:8000/cms/students/', {
+      // const response = await axios.get('http://localhost:8000/api/all_students/', {
       //   headers: {
       //     Authorization: `Bearer ${token}`
       //   }
       // });
 
-      // const currentAdminResponse = await axios.get('http://localhost:8000/api/admin/current/', {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`
-      //   }
-      // });
+      // console.log(response.data, "response")
 
+
+    // Fetch current admin data
+    const currentAdminResponse = await axios.get('http://localhost:8000/admin/current/', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(currentAdminResponse.data, "currentAdminResponse")
       // const currentAdmin = currentAdminResponse.data;
 
       // const updatedAdmins = response.data.admins.map(admin => ({

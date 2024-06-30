@@ -16,11 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from cms_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/', views.login),
-    path('api/getAllStudents/', views.get_all_students),
+    path('cms_app/', include('cms_app.urls')),  # Include the app's urls
+    path('api/all_students/', views.get_all_students),  # Include the new endpoint
 ]
