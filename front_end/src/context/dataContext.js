@@ -34,7 +34,7 @@ export const DataProvider = ({ children }) => {
       //   }
       // });
 
-      // const currentAdminResponse = await axios.get('http://localhost:8000/cms/admins/current/', {
+      // const currentAdminResponse = await axios.get('http://localhost:8000/api/admin/current/', {
       //   headers: {
       //     Authorization: `Bearer ${token}`
       //   }

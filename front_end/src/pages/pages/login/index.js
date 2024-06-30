@@ -87,27 +87,34 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/cms/admins/login/', {
+      const response = await axios.post('http://localhost:8000/api/login/', {
         email: values.email,
         password: values.password
       }, {
         headers: {
           'Content-Type': 'application/json'
-        },
-        // withCredentials: true // if your API uses cookies
+        }
       });
-
+  
+      // Log response to ensure we are getting the token
+      console.log('Login response:', response.data);
+  
       // Save the token to localStorage
-      localStorage.setItem('auth-token', response.data.access);
-      localStorage.setItem('refresh-token', response.data.refresh);
+      if (response.data.access) {
+        localStorage.setItem('auth-token', response.data.access);
+      }
+  
+      // Check if token is set correctly
+      console.log('Stored token:', localStorage.getItem('auth-token'));
+  
       await fetchData(); // to make sure that all data is loaded on login
-
+  
       router.push('/'); // Redirect user to dashboard after successful login
     } catch (error) {
       console.error('Error logging in:', error); // Handle error response
       // Optionally show error message to the user
     }
-  };
+  };  
   
   return (
     <Box className='content-center'>

@@ -1,5 +1,5 @@
 """
-ASGI config for campus_sync_manager project.
+ASGI config for cms_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'campus_sync_manager.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms_project.settings')
 
 application = get_asgi_application()

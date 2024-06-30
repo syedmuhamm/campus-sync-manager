@@ -1,5 +1,5 @@
 """
-URL configuration for campus_sync_manager project.
+URL configuration for cms_project project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -14,10 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from cms_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('cms/', include('cms.urls')),
+    path('api/login/', views.login),
+    path('api/getAllStudents/', views.get_all_students),
 ]
