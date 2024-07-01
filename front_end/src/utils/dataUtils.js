@@ -9,10 +9,10 @@
 export const filterStudentsViaSelectedClassAndSection = (students, selectedClass, selectedSection, filterOption) => {
   return students.filter((student) => {
     // Check if the student's class matches the selectedClass filter
-    const isClassMatch = selectedClass ? student.ClassID === parseInt(selectedClass) : true;
+    const isClassMatch = selectedClass ? student.ClassID.ClassID === parseInt(selectedClass) : true;
 
     // Check if the student's section matches the selectedSection filter
-    const isSectionMatch = selectedSection ? student.ClassSectionID === parseInt(selectedSection) : true;
+    const isSectionMatch = selectedSection ? student.ClassSectionID.ClassSectionID === parseInt(selectedSection) : true;
 
     // Check if the student's fee payment status matches the filterOption 'unpaid'
     const isFeeMatch = filterOption === 'unpaid' ? student.FeePaid === 'no' : true;

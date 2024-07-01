@@ -134,9 +134,9 @@ const StudentTableMain = () => {
   if (isLoading) {
     return <LoadingIndicator />;
   }
-
+console.log(appData)
   // Filter sections based on selected class
-  const filteredSections = appData.classSections.filter((section) => section.ClassID == selectedClass);
+  const filteredSections = appData.class_sections.filter((section) => section.ClassID == selectedClass);
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -175,7 +175,7 @@ const StudentTableMain = () => {
                     handleFeePaidClick={() => handleFeePaidSwitch(student.StudentID, student.FeePaid)} 
                   />
                 </TableCell>
-                <TableCell style={{ minWidth: 50 }}>{getClassName(student.ClassID)}</TableCell>
+                <TableCell style={{ minWidth: 50 }}>{getClassName(student.ClassID.ClassID)}</TableCell>
                 <TableCell style={{ minWidth: 150 }}>
                   <ActionButtons 
                     handleEditClick={() => handleEditClick(student)} 
