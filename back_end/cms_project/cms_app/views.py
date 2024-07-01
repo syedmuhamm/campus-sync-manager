@@ -15,8 +15,7 @@ import logging
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-
+from .serializers import StudentSerializer
 
 
 @csrf_exempt
@@ -74,6 +73,8 @@ def get_current_admin(request):
 @permission_classes([IsAuthenticated])
 def get_all_students(request):
     students = Student.objects.all()
+    serializer = StudentSerializer(students, many=True)
+    
     student_data = []
     for student in students:
         student_data.append({
@@ -92,4 +93,5 @@ def get_all_students(request):
             'Status': student.Status,
             'StudentAddress': student.StudentAddress,
         })
-    return Response({'students': student_data})
+    # return Response({'students': student_data})
+    return JsonResponse(serializer.data, safe=False)
