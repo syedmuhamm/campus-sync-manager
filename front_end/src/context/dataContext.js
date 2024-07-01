@@ -20,7 +20,6 @@ export const DataProvider = ({ children }) => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-      console.log(token, "token")
 
       // const response = await axios.get('http://localhost:8000/cms/all_data/', {
       //   headers: {
@@ -28,34 +27,30 @@ export const DataProvider = ({ children }) => {
       //   }
       // });      
 
-      // const response = await axios.get('http://localhost:8000/api/all_students/', {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`
-      //   }
-      // });
-
-      // console.log(response.data, "response")
-
+      const response = await axios.get('http://localhost:8000/cms_app/all_students/', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
     // Fetch current admin data
-    const currentAdminResponse = await axios.get('http://localhost:8000/admin/current/', {
+    const currentAdminResponse = await axios.get('http://localhost:8000/cms_app/admin/current/', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    console.log(currentAdminResponse.data, "currentAdminResponse")
-      // const currentAdmin = currentAdminResponse.data;
+      const currentAdmin = currentAdminResponse.data;
 
-      // const updatedAdmins = response.data.admins.map(admin => ({
-      //   ...admin,
-      //   isCurrentAdmin: admin.id === currentAdmin.id
-      // }));
+      const updatedAdmins = response.data.admins.map(admin => ({
+        ...admin,
+        isCurrentAdmin: admin.id === currentAdmin.id
+      }));
 
-      // setAppData({
-      //   ...response.data,
-      //   admins: updatedAdmins
-      // });
+      setAppData({
+        ...response.data,
+        admins: updatedAdmins
+      });
 
     setIsLoading(false);
     } catch (error) {
