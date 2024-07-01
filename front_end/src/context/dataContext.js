@@ -21,17 +21,17 @@ export const DataProvider = ({ children }) => {
         throw new Error('No authentication token found');
       }
 
-      // const response = await axios.get('http://localhost:8000/cms/all_data/', {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`
-      //   }
-      // });      
-
-      const response = await axios.get('http://localhost:8000/cms_app/all_students/', {
+      const response = await axios.get('http://localhost:8000/cms_app/all_data/', {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      });
+      });      
+
+      // const response = await axios.get('http://localhost:8000/cms_app/all_students/', {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`
+      //   }
+      // });
 
     // Fetch current admin data
     const currentAdminResponse = await axios.get('http://localhost:8000/cms_app/admin/current/', {

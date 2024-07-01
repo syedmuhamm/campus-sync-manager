@@ -2,7 +2,7 @@
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Admin, Student
+from .models import Admin, Student, Class, ClassSection
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from .decorators import token_required
@@ -15,7 +15,7 @@ import logging
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import StudentSerializer
+from .serializers import StudentSerializer, AdminSerializer, ClassSerializer, ClassSectionSerializer 
 
 
 @csrf_exempt
@@ -95,3 +95,31 @@ def get_all_students(request):
         })
     # return Response({'students': student_data})
     return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_data(request):
+    # Fetch all data from Admin model
+    admins = Admin.objects.all()
+    admin_serializer = AdminSerializer(admins, many=True)
+    
+    # Fetch all data from Student model
+    students = Student.objects.all()
+    student_serializer = StudentSerializer(students, many=True)
+    
+    # Fetch all data from Class model
+    classes = Class.objects.all()
+    class_serializer = ClassSerializer(classes, many=True)
+    
+    # Fetch all data from ClassSection model
+    class_sections = ClassSection.objects.all()
+    class_section_serializer = ClassSectionSerializer(class_sections, many=True)
+
+    data = {
+        'admins': admin_serializer.data,
+        'students': student_serializer.data,
+        'classes': class_serializer.data,
+        'class_sections': class_section_serializer.data,
+    }
+
+    return JsonResponse(data, safe=False)
